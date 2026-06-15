@@ -186,11 +186,17 @@ codex exec -m gpt-5.4-mini "把这个文件里的过期 import 清理掉"
 model_reasoning_summary = "concise"
 ```
 
-**② 服务层级（`service_tier`）——给你的请求排个优先级。** 内置 `flex`（弹性，优化成本，可能稍慢）和 `fast`（优先速度）。赶时间且不在乎那点成本，可以试 `fast`：
+**② 服务层级（`service_tier`）——给你的请求排个优先级。** 内置 `flex`（弹性，优化成本，可能稍慢）和 `fast`（优先速度）。赶时间且不在乎那点成本，可以试 `fast`——注意官方要求同时加一个 feature flag 才生效：
 
 ```toml
 # ~/.codex/config.toml
+# 弹性模式（默认）
 service_tier = "flex"
+
+# 快速模式：需同时开启 feature flag，否则不生效
+service_tier = "fast"
+[features]
+fast_mode = true
 ```
 
 这俩都属于「用顺手了再去碰」的细节，新手保持默认完全没问题。

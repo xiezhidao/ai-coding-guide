@@ -252,7 +252,7 @@ claude
 - **启用 Option+Enter 多行输入**（仅 macOS）：开启后提示框里 `Option+Enter` 插入换行。**Option 键被意外捕获、影响打字就关掉它**，改完需重启终端。
 - **启用自动更新**：自动检查并安装插件更新，重启时应用。
 
-这几项长这样——下图是 JetBrains 设置里 **Tools → Claude Code \[Beta]** 的真实面板：最上面是 `Claude command` 路径（排查「命令未找到」就看它），下面依次是配置目录、几个通知开关、Option+Enter 多行输入、自动更新勾选项。
+这几项长这样——下图是 JetBrains 设置里 **Tools → Claude Code \[Beta]** 的真实面板：最上面是 `Claude command` 路径（排查「命令未找到」就看它），下面依次是抑制通知的开关、Option+Enter 多行输入、自动更新勾选项。
 
 ![JetBrains 设置 → 工具 → Claude Code \[Beta] 配置面板：Claude command 路径在最上，下面是各勾选项](assets/09-jetbrains/placeholder-settings.png)
 

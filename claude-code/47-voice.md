@@ -281,7 +281,7 @@ Voice mode enabled (hold). Hold Space to record. Dictation language: en (/config
 
 **第二步：留意输入框页脚的提示**
 
-提示词为空时，输入框页脚会显示一行 `hold Space to speak`（按住模式）这样的提示——**这是在告诉你「现在按住空格就能说话」**。
+提示词为空时，输入框页脚会显示一行 `hold Space to speak` 这样的提示——**这是在告诉你「现在按住空格就能说话」**。
 
 **第三步：按住空格，说一句英文提示**
 

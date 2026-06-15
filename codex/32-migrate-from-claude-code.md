@@ -168,8 +168,8 @@ Codex 不是这套。它把「能动多大」和「问不问你」**拆成两个
 |---|---|---|
 | 只让它读、别动我东西 | `default` 模式 / 只读 | 沙箱 `read-only` |
 | 项目里放手改、出项目要问 | `acceptEdits` 一类 | 沙箱 `workspace-write` + 审批 `on-request`（日常黄金组合） |
-| 全自动、啥都别问 | `bypassPermissions` | 沙箱 `danger-full-access` + 审批 `never`（即 `--yolo`） |
-| 拦死某条危险命令 | `permissions.deny` 写规则 | rules（实验性）按命令前缀 `forbidden` |
+| 全自动、啥都别问 | `bypassPermissions` | 沙箱 `danger-full-access` + 审批 `never`（`--yolo` 更彻底：完全绕开沙箱） |
+| 拦死某条危险命令 | `permissions.deny` 写规则 | rules（实验性）用 `prefix_rule()` 匹配命令前缀，`decision = "forbidden"` 即拦死 |
 | 切换松紧 | `Shift+Tab` | 会话里 `/permissions` 或启动加 `-s` / `-a` |
 
 几个搬过来必须重建的认知：

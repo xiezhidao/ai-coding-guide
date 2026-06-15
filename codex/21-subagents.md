@@ -221,7 +221,7 @@ Prioritize correctness, security, behavior regressions, and missing test coverag
 
 这是自定义 agent 最香的地方——**让每路 agent 用最匹配的脑子**。两个旋钮：
 
-- **`model`**：用哪个模型。官方思路是「侦察用快的、审查用强的」——偏读、扫大文件、跑并行 worker 这种活，用更快更省的（官方点名 `gpt-5.4-mini` 这档）；要审查、要啃多步复杂逻辑的，用更强的（官方让从 `gpt-5.5` 起步）。**具体模型名随版本变，以官方为准**，记住这个「侦察用快、攻坚用强」的分配思路就够了。
+- **`model`**：用哪个模型。官方思路是「侦察用快的、审查用强的」——偏读、扫大文件、跑并行 worker 这种活，用更快更省的（官方点名 `gpt-5.4-mini` 这档）；要审查、要啃多步复杂逻辑的，用更强的（官方列了 `gpt-5.4` / `gpt-5.5` 两档，`gpt-5.5` 是 demanding agents 的起点，reviewer 示例用的是 `gpt-5.4`）。**具体模型名随版本变，以官方为准**，记住这个「侦察用快、攻坚用强」的分配思路就够了。
 - **`model_reasoning_effort`**：思考强度，三档。
 
 | 思考强度 | 用在 | 代价 |
@@ -231,6 +231,8 @@ Prioritize correctness, security, behavior regressions, and missing test coverag
 | `low` | 任务直白、就图个快 | 最快 |
 
 把它俩落到文件里，给侦察兵配快模型、低思考，给审查员配强模型、高思考：
+
+> 官方示例的侦察兵用 `gpt-5.3-codex-spark`（需 ChatGPT Pro，研究预览），这里改用 `gpt-5.4-mini`，Pro 用户可换回 `gpt-5.3-codex-spark`。
 
 ```toml
 # .codex/agents/explorer.toml —— 只读侦察兵：快、省、不动手

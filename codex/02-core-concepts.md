@@ -26,7 +26,7 @@
 
 这里的「代理（Agent）」是关键词，第一次见得解释一句：**代理 = 能自己拆解任务、调工具、看结果、再决定下一步的 AI，不是一问一答的聊天框。**
 
-你要是看过 Claude Code 篇的「代理循环」，这段可以快进——道理完全一样。官方描述 Codex 干活的方式是这么一句：**「代理在一个循环里跑终端命令，它改代码、跑检查、尝试验证自己的工作」**（原文：The agent runs terminal commands in a loop. It edits code, runs checks, and tries to validate its work）。
+官方描述 Codex 干活的方式是这么一句：**「代理在一个循环里跑终端命令，它改代码、跑检查、尝试验证自己的工作」**（原文：The agent runs terminal commands in a loop. It edits code, runs checks, and tries to validate its work）。
 
 翻译成大白话，还是那三个动作——**想 → 做 → 看**：
 
@@ -59,7 +59,7 @@
 | 沙箱模式 | 能改文件吗 | 能联网吗 | 啥时候用 |
 |---|---|---|---|
 | `read-only`（只读） | ❌ 不能（要改得先批） | ❌ | 只想让它读代码、做审查、出方案，别动我东西 |
-| `workspace-write`（工作区可写） | ✅ 仅限工作区内 | ❌ 默认不行 | **日常开发，默认就是这个**，低打扰 |
+| `workspace-write`（工作区可写） | ✅ 仅限工作区内 | ❌ 默认不行 | **日常开发最常用**；版本控制目录下 Codex 默认推荐这个，非版本控制目录默认 `read-only` |
 | `danger-full-access`（完全访问） | ✅ 全机器 | ✅ | 完全信任的环境，**名字带 danger 不是吓你的，慎用** |
 
 看到 `workspace-write` 那行「仅限工作区内」没有？**这就是我桌面文件没被改的原因**——它们不在我启动 Codex 的那个项目目录里，压根不在围栏内。不是 Codex 偷懒，是它真的够不着。
@@ -69,7 +69,7 @@
 平台上各有各的实现，这点你装的时候会碰到（细节留到 [03 安装与登录](03-install.md) 讲）：
 
 - **macOS**：用系统自带的 Seatbelt 框架，**开箱即用**，啥都不用配。
-- **Windows**：在 PowerShell 里跑用原生 Windows 沙箱；用 WSL2 则走 Linux 那套实现。
+- **Windows**：直接在 Windows 原生环境运行，用原生 Windows 沙箱（分 `elevated` 和 `unelevated` 两种模式）；用 WSL2 则走 Linux 那套实现。
 - **Linux / WSL2**：得先自己装一个叫 `bubblewrap` 的东西，沙箱才正常工作（这是官方明确要求的前置条件）。
 
 > 💡 **一句话总结**：沙箱是 Codex 头上的第一道紧箍咒——**默认（`workspace-write`）只让它在你的工作区里改文件、还不许联网**；想让它管更宽，得自己把圈画大。
@@ -147,7 +147,7 @@ flowchart TD
 
 最妙的用法官方点了出来，我自己也最爱用——**把它当反馈回路（feedback loop）**：当 Codex 对你的代码库做了错误假设，你别光在对话里纠正（那是一次性的，下次它又忘），直接**让它把这条修正写进 `AGENTS.md`**，下回开新会话它自己就继承了。我给一个 Python 项目调了两周，`AGENTS.md` 从空白长到二十来行，全是它踩过、被我逮住、然后自己记下来的坑——现在新会话基本不犯重复错误了。
 
-> 用过 Claude Code 的注意：`AGENTS.md` 之于 Codex，约等于 `CLAUDE.md` 之于 Claude Code。**同一个概念，换了个文件名。** 从 Claude Code 迁过来的，这层心智模型可以直接平移。
+> `AGENTS.md` 之于 Codex，约等于 `CLAUDE.md` 之于 Claude Code——**同一个概念，换了个文件名**。
 
 > 💡 **一句话总结**：`AGENTS.md` 是 Codex 的项目入职手册——**写下你项目的规矩，它每次开工先读**；把它当反馈回路，犯一次错就记一条，越用越顺手。
 

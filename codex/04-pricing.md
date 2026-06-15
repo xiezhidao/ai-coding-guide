@@ -75,7 +75,7 @@ Codex 只是个命令行工具（外加桌面 App、IDE 扩展、网页端几个
 ## 03 ChatGPT 各档怎么选：Plus / Pro / Business / Enterprise
 
 走订阅这条路，下一步就是选档。我把官方 pricing 页列出的、**含 Codex 能力的几档**整理成一张表（具体金额随时会变，认概念为主）：
-![[docs/codex/assets/04-price/1-2-subscription.png]]
+![ChatGPT 各订阅档位与 Codex 能力对比](assets/04-price/1-2-subscription.png)
 
 | 档位 | 月费（参考） | Codex 用量（相对） | 关键特点 | 适合谁 |
 |------|------------|------------------|---------|--------|

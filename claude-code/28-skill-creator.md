@@ -51,18 +51,14 @@
 
 先给结论：**`skill-creator` 本身就是一个 skill，它的专长是「造别的 skill」**。听着像绕口令，但逻辑很顺——既然 skill 是用来扩展 Claude 能力的，那「造 skill」这件重复性工作，本身就值得做成一个 skill。
 
-它不是 Claude Code 自带就有的（不像 `/code-review`、`/debug` 那几个捆绑 skill），而是放在**官方插件市场**（`claude-plugins-official`）里。第 24 篇讲插件时你装过插件市场，这里是同一套机制：
+它不是 Claude Code 自带就有的（不像 `/code-review`、`/debug` 那几个捆绑 skill），需要单独安装——把 skill 目录放到 `~/.claude/skills/`（个人全局）或项目的 `.claude/skills/`（只对这个项目生效），第 27 篇已讲过这套机制。官方插件市场（`claude-plugins-official`）里对应「创建插件」的工具包叫 `plugin-dev`，`skill-creator` 是独立发布的 skill，安装方式是直接克隆或下载目录到 skills 路径：
 
 ```bash
-# 在 Claude Code 会话里，先加官方插件市场（装过就跳过）
-/plugin marketplace add anthropics/claude-plugins-official
-# 然后装 skill-creator
-/plugin install skill-creator@claude-plugins-official
+# 把 skill-creator 目录放到个人 skills 目录
+cp -r skill-creator ~/.claude/skills/
 ```
 
-**预期**：装好后，`/skills` 列表里能看到 `skill-creator`，描述写着「Create new skills, modify and improve existing skills...」。
-
-> ⚠️ 装插件需要**魔法上网**——插件市场是从 GitHub 拉的（`anthropics/claude-plugins-official`），国内网络直连大概率超时。装一次留本地，之后用不用再联网无所谓。
+**预期**：放好后，`/skills` 列表里能看到 `skill-creator`，描述写着「Create new skills, modify and improve existing skills...」。
 
 装好之后，请它出场有两种姿势，**跟 27 篇讲的「用 skill」一模一样**：
 
@@ -281,7 +277,7 @@ echo "// test change" >> README.md
 
 **重点体会中间那行**——A 不触发但 B 能跑，恰恰证明了本篇的核心论点：**skill 本身没问题，问题在「叫不叫得动」，而叫不动几乎总是 `description` 的锅**。这正是手写党踩了无数次、却始终没意识到的那个坑。这时让 `skill-creator` 走一遍「描述优化」就能救回来。
 
-跑通这六步，你就把「起脚手架 → 写对 description → 落到正确目录 → 制造改动 → 验证自动触发 / 直接调用」这条完整链路亲手验了一遍。**以后造任何 skill，本质都是在这套流程上换内容。**
+跑通这五步，你就把「起脚手架 → 写对 description → 落到正确目录 → 制造改动 → 验证自动触发 / 直接调用」这条完整链路亲手验了一遍。**以后造任何 skill，本质都是在这套流程上换内容。**
 
 > 💡 一句话总结：动手就盯两件事——**生成的 `description` 里有没有真实触发词、用大白话问它会不会自动出场**；自动不触发但 `/名字` 能跑，就是 `description` 的锅，让 `skill-creator` 优化描述补关键词。
 

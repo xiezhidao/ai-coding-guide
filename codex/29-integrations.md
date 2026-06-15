@@ -176,7 +176,7 @@ Slack 是「聊天里召唤」，**Linear** 则是「在项目管理工具里召
 codex mcp add linear --url https://mcp.linear.app/mcp
 ```
 
-这条命令会提示你登录 Linear 账号、把它连到 Codex。也可以手写进 `~/.codex/config.toml` :
+这条命令会提示你登录 Linear 账号、把它连到 Codex。也可以手写进 `~/.codex/config.toml` ：
 
 ```toml
 [mcp_servers.linear]
@@ -287,7 +287,7 @@ with Codex() as codex:
 
 > 上面 `model="gpt-5.4"` 只是官方示例里的写法，**具体模型名随版本变，以官方为准**，别照抄写死。
 
-应用本身已经是异步的，就用 `AsyncCodex` :
+应用本身已经是异步的，就用 `AsyncCodex` ：
 
 ```python
 import asyncio

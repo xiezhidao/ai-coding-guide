@@ -76,9 +76,10 @@
 /sandbox
 ```
 
-这会弹出一个面板，有几个选项卡，你主要看两个：
+这会弹出一个面板，有三个选项卡：
 
 - **Mode（模式）**：选「自动允许」还是「常规权限」。**自动允许 = 沙箱化的命令不再提示你直接跑**（这才是沙箱的爽点）；常规权限 = 即便沙箱化了也照样问你。
+- **Overrides（覆盖）**：控制沙箱内跑不了的命令能否回退到无沙箱流程运行（对应 `allowUnsandboxedCommands` 设置）。
 - **Config（配置）**：看当前生效的沙箱边界长啥样。
 
 平台差异得说清楚：
@@ -211,7 +212,7 @@ export NO_PROXY="localhost,127.0.0.1,.internal.company.com"
 
 ### 自签证书：一行指向你的 CA
 
-公司用 TLS 检查代理（像 Zscaler、CrowdStrike 这类）的话，Claude Code 默认就信任操作系统证书存储里的根证书——**只要公司的根证书装进了系统信任库，通常啥都不用配就能用**。要是还不行，手动指一下你的自定义 CA 证书：
+公司用 TLS 检查代理（像 Zscaler、CrowdStrike 这类）的话，Claude Code 默认同时信任自带的 Mozilla CA 证书集和操作系统的证书库——**只要公司的根证书装进了系统信任库，通常啥都不用配就能用**。要是还不行，手动指一下你的自定义 CA 证书：
 
 ```bash
 export NODE_EXTRA_CA_CERTS=/path/to/your-company-ca.pem
@@ -227,6 +228,9 @@ export NODE_EXTRA_CA_CERTS=/path/to/your-company-ca.pem
 | `claude.ai` | claude.ai 账户登录认证 |
 | `platform.claude.com` | Anthropic 控制台账户认证 |
 | `downloads.claude.ai` | 插件下载、原生安装器和自动更新 |
+| `storage.googleapis.com` | v2.1.116 版本前的原生安装器和自动更新（旧版本） |
+| `bridge.claudeusercontent.com` | Chrome 扩展 WebSocket 桥接 |
+| `raw.githubusercontent.com` | `/release-notes` 更新日志源和插件市场安装计数 |
 
 > **国内用户重点看这条**：`api.anthropic.com`、`claude.ai` 这些在国内直连大概率不通，**你需要「魔法上网」**，或者走第 04 篇 / 第 05 篇讲的第三方中转、国产模型路线。这一节的代理配置，本质也能拿来指向你的中转网关。要是你用的是 Amazon Bedrock、Google Vertex 这类第三方提供商，模型流量走的是它们的地址，就不必放行上面这几个 Anthropic 域名了。
 
@@ -251,7 +255,7 @@ export NODE_EXTRA_CA_CERTS=/path/to/your-company-ca.pem
 | 终端 | `Shift+Enter` 换行 |
 |------|-------------------|
 | iTerm2、Ghostty、Kitty、Apple Terminal、Windows Terminal、WezTerm、Warp | 不用配，直接能用 |
-| VS Code、Cursor、Alacritty、Zed | 跑一次 `/terminal-setup` |
+| VS Code、Cursor、Devin Desktop、Alacritty、Zed | 跑一次 `/terminal-setup` |
 | gnome-terminal、JetBrains IDE（PyCharm 等） | 用不了；改用 `Ctrl+J` 或 `\` 然后 `Enter` |
 
 中间那档（VS Code、Cursor 这些），在会话里跑一次：
@@ -344,7 +348,7 @@ export ANTHROPIC_MODEL=sonnet
 
 挑完模型，其实还有一层旋钮叫**努力级别（effort level）**——它控制模型「思考多深」。同一个 Opus，你可以让它「快速过一遍」，也可以让它「往死里想」，对应的就是 token 花得少还是多。
 
-**类比：还是那位大厨，今天是随手颠两下勺，还是慢工细炖。** 同一个人，火候和用心程度可以不一样——简单的家常菜随手就出，硬菜才慢慢吊汤。努力级别就是给模型调这个「用心程度」：`low` 省钱快出、`high`（多数模型的默认）平衡、再往上 `max` 是「不计成本往深里想」。
+**类比：还是那位大厨，今天是随手颠两下勺，还是慢工细炖。** 同一个人，火候和用心程度可以不一样——简单的家常菜随手就出，硬菜才慢慢吊汤。努力级别就是给模型调这个「用心程度」，官方列了五档：`low` 省钱快出、`medium` 轻量平衡、`high`（Opus 4.8/4.6 和 Sonnet 4.6 的默认）平衡推理与成本、`xhigh` 更深推理（Opus 4.7 的默认）、`max` 「不计成本往深里想」。
 
 最实用的两个用法：
 

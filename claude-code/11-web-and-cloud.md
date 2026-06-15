@@ -177,7 +177,7 @@ claude remote-control
 claude-cli://open?repo=acme/payments&q=review%20open%20PRs
 ```
 
-`repo` 指定一个 GitHub 的 `owner/name` 仓库，`q` 是预填的提示词（要 URL 编码，`%20` 就是空格）。点开它，你机器上会弹出一个新终端，Claude Code 在你 `acme/payments` 那个**本地克隆**里启动，提示框里已经填好了「review open PRs」。
+`repo` 指定一个 GitHub 的 `owner/name` 仓库，`q` 是预填的提示词（要 URL 编码，`%20` 就是空格）。点开它，你机器上会弹出一个新终端，Claude Code 在你 `acme/payments` 那个**本地克隆**里启动，提示框里已经填好了「review open PRs」。有个前提要注意：`repo` 只认识你**至少跑过一次 `claude` 的路径**——如果你从来没在那个克隆里启动过 Claude Code，它找不到记录，会话会回落到你的主目录，而不是仓库目录。
 
 这里有条**安全设定**得记牢，挺重要：
 

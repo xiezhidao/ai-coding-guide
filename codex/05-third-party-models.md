@@ -126,14 +126,14 @@ Codex 把所有配置放在一个文件里：`~/.codex/config.toml` （这是 Co
 
  **CC Switch**（一款免费开源的跨平台桌面工具，GitHub 仓库 [github.com/farion1231/cc-switch](https://github.com/farion1231/cc-switch) ）走的就是这条路：在本机起代理，把 Codex 的请求透明转发到你选的后端，还内置了 DeepSeek 等常见平台的预设，省得你手填。
 
-![CC Switch 工具界面（占位图）](assets/05-third-party-models/placeholder-ccswitch.png)
+![CC Switch 主界面](assets/05-third-party-models/ccswitch.png)
 
 安装 CC Switch 之后，进入页面上面会看到如图
 
-![CC Switch 添加 DeepSeek 提供商（占位图）](assets/05-third-party-models/placeholder-add-provider.png)
+![CC Switch 安装后进入的主页面](assets/05-third-party-models/add-provider.png)
 
-选中 Claude Code，对它进行配置供应商，相当于使用Claude Code  消耗哪家的 token。
-![CC Switch 添加 DeepSeek 提供商（占位图）](assets/05-third-party-models/placeholder-add-provider2.png)
+选中 Claude Code，对它进行配置供应商，相当于使用 Claude Code 消耗哪家的 token。
+![CC Switch 配置供应商：一长串预设后端可选](assets/05-third-party-models/add-provider2.png)
 
 **类比：找个翻译。** 你（Codex）只会说英语（OpenAI 协议），对方（DeepSeek）只听得懂中文。路线一是指望对方自己学英语（平台支持 Responses API）；路线二是你雇个翻译（代理工具）站中间，两头传话。翻译靠谱，沟通就顺。
 
@@ -226,7 +226,7 @@ env_key = "DEEPSEEK_API_KEY"   # 引用上一步的环境变量名
 
 ### 看一眼：当前用的是哪个模型
 
-启动 Codex，在会话里用斜杠命令 `/model` ——它能列出 / 切换当前线程使用的模型（来源：官方《Models》文档）。先确认 Codex 认到了你配的模型，而不是还停在默认的 GPT。
+启动 Codex，在会话里用斜杠命令 `/model` ——它能切换当前线程使用的模型（来源：官方《Models》文档）。先确认 Codex 认到了你配的模型，而不是还停在默认的 GPT。
 
 ```bash
 codex

@@ -160,13 +160,13 @@ flowchart TB
 |--------|--------|---------------------|---------|
 | `model` | 默认用哪个模型 | 跟随 Codex 内置默认 | `model = "gpt-5.5"` |
 | `approval_policy` | 啥时候停下来问你 | `on-request` | `approval_policy = "on-request"` |
-| `sandbox_mode` | 能动多大（文件 / 网络） | `read-only`（见下注） | `sandbox_mode = "workspace-write"` |
+| `sandbox_mode` | 能动多大（文件 / 网络） | `workspace-write`（git 仓库，见下注） | `sandbox_mode = "workspace-write"` |
 | `model_reasoning_effort` | 推理使多大劲 | 跟随模型 / 预设 | `model_reasoning_effort = "high"` |
 | `web_search` | 联网搜索模式 | `cached`（缓存） | `web_search = "live"` |
 | `personality` | 沟通风格 | `friendly`（示例值） | `personality = "pragmatic"` |
 | `file_opener` | 引用文件点击用哪个编辑器打开 | `vscode` | `file_opener = "cursor"` |
 
-> **关于 `sandbox_mode` 默认值的一点澄清**：`config.toml` 本身的内置默认是 `read-only`（你不写这个键、也不带任何命令行参数时的兜底）。但你直接裸跑 `codex` 不会停在 `read-only`——它走的是 Auto 预设，**在 git 仓库里实际按 `workspace-write` 运行**（非 git 目录则保持 `read-only`）。这俩说的是不同语境：前者是「配置文件没写时的字面默认」，后者是「Auto 预设的运行时实际行为」，别混。
+> **关于 `sandbox_mode` 默认值的一点澄清**：直接裸跑 `codex` 走的是 Auto 预设——**git 仓库里默认 `workspace-write`**（能读写工作区文件），**非 git 目录默认 `read-only`**（只读）。官方把「`workspace-write`」称为「the default sandbox mode」，指的就是最常见的 git 仓库场景。
 
 逐个说几句你最该知道的细节：
 
@@ -245,7 +245,7 @@ hooks = false            # 关掉生命周期 hooks
 
 > ⚠️ **实验性功能，可能随版本变化。** 上表带「实验性」的（以及没列出的更多开关）默认值、成熟度都可能随版本调整，开之前**以官方 Config Reference 和你本地实际为准**，别照我这表写死。
 
-注意一个**容易踩的坑**：菜鸟教程里有些老写法（比如用 `codex_hooks = true` 开 hooks）已经过时了——官方现在的规范键名是 `hooks` ，`codex_hooks` 只是个被弃用的别名。**以官方现行键名为准**，别跟着旧资料抄。
+注意一个**容易踩的坑**：有些老写法（比如用 `codex_hooks = true` 开 hooks）已经过时了——官方现在的规范键名是 `hooks` ，`codex_hooks` 只是个被弃用的别名。**以官方现行键名为准**，别跟着旧资料抄。
 
 开关三种动法，官方都给了：
 

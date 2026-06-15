@@ -90,6 +90,7 @@
 - **default（默认）**：动手改文件前会停下问你。
 - **acceptEdits（自动接受编辑）**：编辑类操作不再逐个问，提速用。
 - **plan（计划模式）**：只出方案不动手，适合大改动前先对齐思路。
+- 以及你额外开启的其他模式（如 `auto` / `bypassPermissions`）。
 
 > 权限模式（Permission Mode），说白了就是「实习生动手前问不问你」的那个开关。
 
@@ -170,7 +171,7 @@
 |------|--------|---------|
 | **反斜杠转义** | 先打 `\`，再按 `Enter` | **所有终端都行**，记不住别的就记这个 |
 | **控制序列** | `Ctrl+J` | 任何终端都行，无需配置 |
-| **Shift+Enter** | `Shift+Enter` | iTerm2、Warp、Windows Terminal 等部分终端**开箱即用** |
+| **Shift+Enter** | `Shift+Enter` | iTerm2、WezTerm、Ghostty、Kitty、Warp、Apple Terminal、Windows Terminal**开箱即用** |
 | **Option+Enter**（macOS） | `Option+Enter` | macOS 上需先把 Option 配成 Meta 键 |
 
 一个稳妥的习惯：**记死一个 `\` + `Enter` 就够了**——因为它「在所有终端都工作」，换机器、换终端都不用重新适应。等你固定用某个终端了，再去试 `Shift+Enter` 那种更顺手的。

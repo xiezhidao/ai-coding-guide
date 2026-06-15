@@ -112,7 +112,8 @@ curl -fsSL https://claude.ai/install.cmd -o install.cmd && install.cmd && del in
 
 几个坑提前说：
 
-- **Homebrew 有两个 cask**：`claude-code` 是稳定版（慢一周、跳过有重大回归的版本），`claude-code@latest` 是最新版，升级各对应 `brew upgrade claude-code` / `claude-code@latest`。
+- **Homebrew 有两个 cask**：`claude-code` 是稳定版（慢一周、跳过有重大回归的版本），`claude-code@latest` 是最新版，升级各对应 `brew upgrade claude-code` / `brew upgrade claude-code@latest`。
+- **WinGet 不自动更新**：需定期手动跑 `winget upgrade Anthropic.ClaudeCode`。
 - **npm 千万别加 `sudo`**。官方明确警告 `sudo npm install -g` 会引发权限问题和安全风险——这正是开头那个最常见的坑。遇到权限报错，正解是改用官方脚本。npm 升级也要用 `npm install -g ...@latest`，别用 `npm update -g`。
 
 > 💡 一句话总结：闭眼选官方脚本就对了，**一条 `curl`（或 Windows 的 `irm`）解决战斗，还自带后台更新**；npm 是下下策，且永远别 `sudo`。
@@ -215,7 +216,7 @@ claude update
 - `"latest"`（默认）：新功能一发布就拿到
 - `"stable"`：用大概一周前的版本，跳过有重大回归的发布——**追求稳定选这个**
 
-不想要自动更新，在 `settings.json` 的 `env` 里设 `"DISABLE_AUTOUPDATER": "1"` 即可（它只停后台检查，`claude update` 手动更新仍能用）。**Homebrew / WinGet / apt 装的默认都不自动更新**，得手动跑对应升级命令（前面表里列了）。
+不想要自动更新，在 `settings.json` 的 `env` 里设 `"DISABLE_AUTOUPDATER": "1"` 即可（它只停后台检查，`claude update` 手动更新仍能用）。**Homebrew / WinGet / apt 装的默认都不自动更新**，得手动跑对应升级命令（前面坑提示里说了）。
 
 ### 卸载
 

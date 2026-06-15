@@ -148,9 +148,9 @@ my-plugin/
 
 几类需要单独点几句，都是官方文档里写明、但容易漏的限制：
 
-**Agents 在插件里被「削权」了。** 这点很关键。官方明确：**出于安全原因，插件提供的 agent 不支持 `hooks`、`mcpServers` 和 `permissionMode` 这三个 frontmatter 字段。** 也就是说，插件里的 subagent 不能自己偷偷挂 hook、起 MCP、或改权限模式——这是防止你装个插件，它的 agent 在背后给你换权限。它支持的是 `model`、`tools`、`disallowedTools`、`skills`、`isolation` 这些（`isolation` 唯一合法值是 `"worktree"`）。
+**Agents 在插件里被「削权」了。** 这点很关键。官方明确：**出于安全原因，插件提供的 agent 不支持 `hooks`、`mcpServers` 和 `permissionMode` 这三个 frontmatter 字段。** 也就是说，插件里的 subagent 不能自己偷偷挂 hook、起 MCP、或改权限模式——这是防止你装个插件，它的 agent 在背后给你换权限。它支持的字段包括 `name`、`description`、`model`、`effort`、`maxTurns`、`tools`、`disallowedTools`、`skills`、`memory`、`background`、`isolation` 这些（`isolation` 唯一合法值是 `"worktree"`）。
 
-**Hooks 能监听的事件巨多。** 插件 hook 跟你自己写的 hook（第 33 篇）监听的是同一批生命周期事件——从 `SessionStart`（会话开始）、`PreToolUse`（工具调用前，能拦）、`PostToolUse`（调用成功后），到 `Stop`（回答结束）、`SessionEnd`（会话终止），官方列了三十多个。新手不用记全，**记住「几乎任何时机都能挂个动作」就行**，具体留到第 33 篇。
+**Hooks 能监听的事件巨多。** 插件 hook 跟你自己写的 hook（第 33 篇）监听的是同一批生命周期事件——从 `SessionStart`（会话开始）、`PreToolUse`（工具调用前，能拦）、`PostToolUse`（调用成功后），到 `Stop`（回答结束）、`SessionEnd`（会话终止），官方列了三十个。新手不用记全，**记住「几乎任何时机都能挂个动作」就行**，具体留到第 33 篇。
 
 **Hook 类型不止「跑脚本」。** 除了最常见的 `command`（跑 shell 命令），还有 `http`（把事件发到一个 URL）、`mcp_tool`（调 MCP 工具）、`prompt`（用模型评估一段提示）、`agent`（跑个 agentic 验证器）。
 

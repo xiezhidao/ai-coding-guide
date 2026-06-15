@@ -22,13 +22,13 @@
 
 先给结论：**云端版就是把 Codex 搬到了 OpenAI 的云上——你不用配任何环境，浏览器打开网页，连上 GitHub，给它派活，它在云端一台隔离机器里读代码、改代码、跑测试，干完直接给你交 diff、提 PR。**
 
-它跑在 [chatgpt.com/codex](https://chatgpt.com/codex) ， 进入之后，点击右上角 claude ，第一次用要做一件事：**连上你的 GitHub 账号**。连上之后，Codex 才能读你仓库里的代码、并从它的改动里给你开 Pull Request（拉取请求，简称 PR，就是「我改好了，请你 review 后合并」的提交方式）。
-![[cloud-entrance.png]]
-![[cloud-entrance2.png]]
+它跑在 [chatgpt.com/codex](https://chatgpt.com/codex) ， 进入之后，第一次用要做一件事：**连上你的 GitHub 账号**。连上之后，Codex 才能读你仓库里的代码、并从它的改动里给你开 Pull Request（拉取请求，简称 PR，就是「我改好了，请你 review 后合并」的提交方式）。
+![Codex 云端版入口：打开 chatgpt.com/codex](assets/10-cloud/cloud-entrance.png)
+![首次使用提示连接 GitHub 账号](assets/10-cloud/cloud-entrance2.png)
 点击中间链接到 GitHub
-![[cloud-connect.png]]
+![点击链接跳转、授权连接 GitHub](assets/10-cloud/cloud-connect.png)
 关联之后，就可以直接选择仓库进行代码修改了，当然如果不想关联了就进到设置里取消关联即可。
-![[cloud-setting.png]]
+![在设置里管理或取消 GitHub 关联](assets/10-cloud/cloud-setting.png)
 **类比：你不用自己开车，叫了辆配好司机的网约车。** 本地版像你自己那辆车——熟是熟，但每次出门前你得自己加油、检查胎压、热车（配环境、装依赖）。云端版是叫车：**车是平台的、司机是平台的、油也是平台的**，你只管在 App 上输入目的地（任务描述），上车（提交），到站下车（看 diff）。中途车坏了、撞了，都是平台的事，伤不到你自己那辆车一根毫毛。
 
 这个「车是别人的」对应到技术上，就是 Codex 在云端起的那个**容器（container，一个互相隔离的轻量运行环境）**——每次任务都新建一个，把你的仓库拉进去，关起门来折腾，跟你本机零接触。
@@ -175,7 +175,7 @@ pnpm install
 
 **收紧阀门二：限制 HTTP 方法**
 
-更狠一层：官方建议把请求**只限制在 `GET`、`HEAD`、`OPTIONS`** 这几个「只读」方法上。这么一来，像 `POST`、`PUT`、`DELETE` 这种「往外写 / 往外发」的请求**全被拦掉**——上面那个「把代码 POST 出去」的钓鱼招数，直接就废了。**只让它读、不让它写**，是性价比极高的一道防线。
+更狠一层：官方建议把请求**只限制在 `GET`、`HEAD`、`OPTIONS`** 这几个「只读」方法上。这么一来，像 `POST`、`PUT`、`PATCH`、`DELETE` 这种「往外写 / 往外发」的请求**全被拦掉**——上面那个「把代码 POST 出去」的钓鱼招数，直接就废了。**只让它读、不让它写**，是性价比极高的一道防线。
 
 来张表把网络这套理清：
 

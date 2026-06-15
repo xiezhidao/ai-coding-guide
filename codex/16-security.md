@@ -285,7 +285,7 @@ approvals_reviewer = "auto_review"
 
 光讲不练记不住。这节带你**亲手验证本篇最核心的一道默认防线：`workspace-write` 模式下，Codex 默认联不上网**。这正是它防数据外泄最硬的一招。全程最小示例，不依赖任何复杂环境。
 
-> ⚠️ 平台前提：沙箱在 macOS（Seatbelt，开箱即用）/ Linux / WSL2（走 Linux 沙箱，Codex 0.115 起沙箱内部用 bubblewrap）/ 原生 Windows（Windows 沙箱）上各有实现，具体见第 03、15 篇。本实验在哪个平台都能跑。
+> ⚠️ 平台前提：沙箱在 macOS（Seatbelt，开箱即用）/ Linux / WSL2（和 Linux 共用同一套沙箱，0.115 起底层改为 bubblewrap；WSL1 从 0.115 起已不再支持，需升级到 WSL2）/ 原生 Windows（Windows 沙箱）上各有实现，具体见第 03、15 篇。本实验在哪个平台都能跑。
 
 **第一步：建个空目录，进去启动 Codex（默认就是 `workspace-write` + `on-request`）。**
 

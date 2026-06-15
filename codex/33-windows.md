@@ -67,7 +67,7 @@ codex --version
 
 预期输出是一行版本号（具体数字以你装的为准），格式大致是 `codex 0.x.x`，能打印出来就说明装好了。
 
-> 想要图形界面而不是命令行？官方还提供 Windows 桌面版 Codex app，命令行装法是 `winget install Codex -s msstore`（从 Microsoft Store 装）。本篇讲的是 CLI，下面的命令都围绕 `codex` 命令行展开。
+> 想要图形界面而不是命令行？官方提供 Windows 桌面版 Codex app，直接从 Microsoft Store 下载；不想打开 Store 界面也可以用 `winget install Codex -s msstore` 装。本篇讲的是 CLI，下面的命令都围绕 `codex` 命令行展开。
 
 **几个前置依赖，提前备齐能少踩坑：**
 

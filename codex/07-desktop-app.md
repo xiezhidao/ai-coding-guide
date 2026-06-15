@@ -6,7 +6,7 @@ OpenAI 把 Codex 拆成四个入口，但官网首页的下载大按钮、文档
 
 这不是随口一说。我数了下官方 `app` 目录下的子页面：features、commands、settings、review、worktrees、automations、browser、computer-use、local-environments、chrome-extension……**十几个页面专门讲桌面 App，CLI 的文档体量连它一半都不到**。官方把宝压在了哪，一目了然。
 
-可吊诡的是，从 Claude Code 篇过来的兄弟，十有八九第一反应是「桌面 App？那不就是给不会命令行的人的简化版吗，我直接上 CLI」。**说句实话，这判断放 Codex 身上是错的**——Codex 的桌面 App 不是 CLI 的阉割版，它把并行、Worktree 隔离、可视化审阅、内置浏览器、自动化全塞进了一个窗口，反而是功能最满的那个面孔。
+可吊诡的是，很多人第一反应是「桌面 App？那不就是给不会命令行的人的简化版吗，我直接上 CLI」。**说句实话，这判断放 Codex 身上是错的**——Codex 的桌面 App 不是 CLI 的阉割版，它把并行、Worktree 隔离、可视化审阅、内置浏览器、自动化全塞进了一个窗口，反而是功能最满的那个面孔。
 
 这一篇就带你把这个窗口逛一圈：哪块区域干嘛、怎么并行不打架、改完怎么一眼看清、哪些快捷键最值得记。
 
@@ -147,7 +147,7 @@ flowchart LR
 
 示意图讲清了「每区职责」，再看一眼真机长啥样，对照着就更踏实：
 
-![Codex 桌面 App 真实界面（占位图）](assets/07-desktop-app/placeholder-app-real.png)
+![Codex 桌面 App 真实界面](assets/07-desktop-app/app-real.png)
 
 
 > 💡 **一句话总结**：界面就三竖条——**左边栏挑去哪、中间跟 Codex 对话下指令、右边面板看它干出来的结果**；记牢「项目能动代码、普通对话只闲聊」这条区分，少走一半弯路。
@@ -275,7 +275,7 @@ Actions 配在哪？跟 Worktree 的「设置脚本」一起，都属于 **Local
 |---------|------|
 | `/status` | 看当前线程 ID、上下文用量、限额情况 |
 | `/review` | 开代码审查模式，审未提交改动或跟基线分支比 |
-| `/plan` | 切到计划模式，做多步规划 |
+| `/plan` | 切换计划模式（开/关），做多步规划 |
 | `/goal` | 设一个 Codex 要持续达成的目标（先用 `/plan` 把它捋清楚再设）|
 | `/mcp` | 看已连接的 MCP server 状态 |
 | `/feedback` | 提反馈（可附带日志）|

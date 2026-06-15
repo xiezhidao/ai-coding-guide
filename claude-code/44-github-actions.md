@@ -302,7 +302,7 @@ anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
 
 **类比：把钥匙锁进保险柜，YAML 里只留个取钥匙的暗号。** GitHub Secrets 就是仓库自带的保险柜——你把真实 key 锁进去，它加密存着、不会显示在任何日志或界面里。workflow 文件里你写的 `${{ secrets.ANTHROPIC_API_KEY }}` 不是密钥本身，**只是一句「去保险柜把那把叫 ANTHROPIC_API_KEY 的钥匙取出来用」的暗号**。文件可以大大方方提交、公开，因为里面压根没有真东西。
 
-怎么把 key 存进这个保险柜？手动的话：打开仓库的 **Settings → Secrets and variables → Actions**，点 **New repository secret**，名字填 `ANTHROPIC_API_KEY`，值填你的真实 key（从 [Claude Console](https://platform.claude.com) 拿，第 04 篇讲过）。如果你前面用了 `/install-github-app`，这一步它已经替你办好了。
+怎么把 key 存进这个保险柜？手动的话：打开仓库的 **Settings → Secrets and variables → Actions**，点 **New repository secret**，名字填 `ANTHROPIC_API_KEY`，值填你的真实 key（从 [Claude Console](https://console.anthropic.com) 拿，第 04 篇讲过）。如果你前面用了 `/install-github-app`，这一步它已经替你办好了。
 
 这套和我们一路强调的安全主线是一脉相承的。第 21 篇讲过**提示注入**——有人往 issue、PR 评论里藏「写给 AI 看的恶意指令」骗 Claude 执行。**云端这套尤其要警惕这一点**：你的 Claude 现在会自动去读 issue 和 PR 评论的内容，而这些内容**任何陌生人都能提交**。所以官方的几条最佳实践，每一条都值得照做：
 

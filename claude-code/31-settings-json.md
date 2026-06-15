@@ -275,7 +275,7 @@ flowchart TB
 
 ### 怎么确认它真读到了：`/status` 看「Setting sources」
 
-这是最关键的一招，**专治「我不确定它到底加载了哪份配置」**。会话里敲 `/status`，里面有一行 `Setting sources`，**列出当前会话实际加载了哪几层设置**——比如 `User settings`、`Project settings`、`Project local settings`。
+这是最关键的一招，**专治「我不确定它到底加载了哪份配置」**。会话里敲 `/status`，里面有一行 `Setting sources`，**列出当前会话实际加载了哪几层设置**——比如 `User settings`、`Project local settings`（具体标签名以实际界面为准）。
 
 官方对它的说明很实在：
 
@@ -365,7 +365,7 @@ claude
 /status
 ```
 
-**预期**：在弹出的状态信息里找到 `Setting sources` 那一行，**它应该同时列出 `Project settings` 和 `Project local settings`**（可能还有你早先配过的 `User settings`）。**看到这两层都在列表里 = 你写的两份配置都被成功加载了**。如果某一层没出现，回第 02 节核对文件路径有没有放错。
+**预期**：在弹出的状态信息里找到 `Setting sources` 那一行，**它应该列出 `Project local settings`**（可能还有你早先配过的 `User settings`），具体标签名以实际界面为准。**看到你写的层都在列表里 = 那份配置被成功加载了**。如果某一层没出现，回第 02 节核对文件路径有没有放错。
 
 **第六步：再用 `/permissions` 交叉确认规则生效**
 

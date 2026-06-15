@@ -4,7 +4,7 @@
 
 > 📚 **系列导航**：上一篇 [04 · API 配置](04-api-config.md) 讲了怎么用官方 API Key 接通 Claude Code。这一篇换个思路——**把后面那个「大脑」整个换掉**，用 DeepSeek 之类的国产模型来省钱。
 
-> ⚠️ **本篇开头先打个预防针**：用第三方模型驱动 Claude Code 属于「**实验性玩法**」。官方文档只正式覆盖到「LLM 网关」和 Bedrock / Vertex 这类托管 Claude，**并没有背书任何非 Anthropic 模型**。本文凡是官方明确写到的（环境变量含义、默认行为）我都标了来源；DeepSeek 那部分以菜鸟教程加实测为主，**接口地址、模型名随时可能变，以 DeepSeek 官方为准**。
+> ⚠️ **本篇开头先打个预防针**：用第三方模型驱动 Claude Code 属于「**实验性玩法**」。官方文档只正式覆盖到「LLM 网关」和 Bedrock / Vertex 这类托管 Claude，**并没有背书任何非 Anthropic 模型**。本文凡是官方明确写到的（环境变量含义、默认行为）我都标了来源；DeepSeek 那部分以社区方案加实测为主，**接口地址、模型名随时可能变，以 DeepSeek 官方为准**。
 
 兄弟们，先说一句可能挨骂的话：**大多数人根本不需要折腾第三方模型**。
 
@@ -175,7 +175,7 @@ Model: deepseek-chat
 | 401 / 鉴权失败 | API Key 错了或过期 | 重新生成 Key，检查有没有多复制空格 |
 | 提示要登录 claude.ai | 客户端还想走官方登录 | 见下方说明 |
 
-最后那条单独说一句：有些第三方接入场景下，Claude Code 启动还会弹官方登录提示。菜鸟教程给的办法是改 `~/.claude.json`，加一行 `"hasCompletedOnboarding": true` 跳过引导。**这属于实验性绕过、不是官方文档记录的标准做法**，新版本行为可能变——能不动就不动，真卡住了再试。
+最后那条单独说一句：有些第三方接入场景下，Claude Code 启动还会弹官方登录提示。常见的办法是改 `~/.claude.json`，加一行 `"hasCompletedOnboarding": true` 跳过引导。**这属于实验性绕过、不是官方文档记录的标准做法**，新版本行为可能变——能不动就不动，真卡住了再试。
 
 > 💡 **一句话总结**：`/status` 看一眼 Base URL 变没变，就知道接没接上；**接不上别瞎猜，照着排查表一项项过**。
 
@@ -240,7 +240,7 @@ export CLAUDE_CODE_SUBAGENT_MODEL=<快而便宜款模型名>
 | `ANTHROPIC_AUTH_TOKEN` | 作为 `Authorization` 头发送，值自动加 `Bearer ` 前缀 | ✅ **接 DeepSeek 等第三方用这个** |
 | `ANTHROPIC_API_KEY` | 作为 `X-Api-Key` 头发送；非交互模式（`-p`）下只要存在就强制用它 | 走官方 Anthropic API 时用 |
 
-为啥第三方推荐 `ANTHROPIC_AUTH_TOKEN`？因为 DeepSeek 这类兼容接口走的是标准 `Authorization: Bearer <key>` 这套，正好对上。这也是菜鸟教程和实测里都用 `ANTHROPIC_AUTH_TOKEN` 的原因。
+为啥第三方推荐 `ANTHROPIC_AUTH_TOKEN`？因为 DeepSeek 这类兼容接口走的是标准 `Authorization: Bearer <key>` 这套，正好对上。这也是社区方案和实测里都用 `ANTHROPIC_AUTH_TOKEN` 的原因。
 
 还有个连带的小坑要心里有数：官方文档明确写了，**当 `ANTHROPIC_BASE_URL` 指向「非第一方主机」（也就是非官方地址）时，MCP 工具搜索默认会被关闭**。简单说就是——**接了第三方之后，某些依赖官方的高级特性可能行为不一样甚至用不了**。这也呼应了第 02 节那句「实验性、没人兜底」。日常编码用不太到，但你要是重度依赖 MCP，心里得有这根弦。
 

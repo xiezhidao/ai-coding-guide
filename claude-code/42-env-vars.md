@@ -170,7 +170,7 @@ ANTHROPIC_BASE_URL     # 把请求改道到代理或网关
 ANTHROPIC_MODEL        # 默认用哪个模型
 ```
 
-- **`ANTHROPIC_API_KEY`**——你的 API 密钥。这里有个**特别容易踩的点**，官方写得明明白白：**一旦设了这个 key，即使你已经登录了订阅（Pro / Max），也会改用这个 key**。想换回订阅，得 `unset ANTHROPIC_API_KEY` 把它清掉。这个坑很容易踩——明明开了 Max 订阅，账单却走了 API 计费，查半天才发现是 `~/.zshrc` 里残留了一行 `export ANTHROPIC_API_KEY`（第 04 篇详谈了订阅 vs API key 怎么选）。
+- **`ANTHROPIC_API_KEY`**——你的 API 密钥。这里有个**特别容易踩的点**，官方写得明明白白：**一旦设了这个 key，即使你已经登录了订阅（Pro / Max / Team / Enterprise），也会改用这个 key**。想换回订阅，得 `unset ANTHROPIC_API_KEY` 把它清掉。**注意：交互模式下，Claude Code 会弹一次确认提示，让你批准或拒绝用这个 key，选择记住后续自动沿用；非交互模式（`-p`）则直接使用，不弹确认。**这个坑很容易踩——明明开了 Max 订阅，账单却走了 API 计费，查半天才发现是 `~/.zshrc` 里残留了一行 `export ANTHROPIC_API_KEY`（第 04 篇详谈了订阅 vs API key 怎么选）。
 
 - **`ANTHROPIC_BASE_URL`**——把 API 请求**改道**到你的代理或网关。接国产模型、走自建中转，核心就是它（第 05 篇那套配置，主角就是这个变量）。
 
@@ -207,7 +207,7 @@ DO_NOT_TRACK=1           # 同上，跨工具通用的约定
 
 两个高频、强烈推荐你认识的：
 
-- **`CLAUDE_CONFIG_DIR`**——覆盖配置目录（默认 `~/.claude`）。**所有设置、凭证、历史、插件都存这底下**。它最大的用处是**并行跑多个账号**——官方给的例子就很实用：
+- **`CLAUDE_CONFIG_DIR`**——覆盖配置目录（默认 `~/.claude`）。**所有设置、凭证、会话历史、插件都存这底下**。它最大的用处是**并行跑多个账号**——官方给的例子就很实用：
 
 ```bash
 # 给工作账号开个独立配置目录，互不干扰
