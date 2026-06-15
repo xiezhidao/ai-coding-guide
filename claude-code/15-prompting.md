@@ -150,7 +150,7 @@ TypeError: Cannot read properties of null (reading 'userId')
 
 最后一条，专治「大活儿」：**遇到改动大、跨多文件、或者你自己也吃不准方向的任务，别让它上来就闷头写——先让它列个计划，你过一眼再放行。**
 
-这事第 06 篇（省 token）埋过伏笔，这里说透为什么。官方文档的判断很干脆：
+这事第 06 篇（套餐与计费）埋过伏笔，这里说透为什么。官方文档的判断很干脆：
 
 > 让 Claude 直接跳到编码可能会产生解决错误问题的代码。
 
@@ -167,7 +167,7 @@ TypeError: Cannot read properties of null (reading 'userId')
 这一步先别改任何代码。
 ```
 
-**办法二，切到 Plan Mode（计划模式）。** 这是 Claude Code 专门的「只读规划」档——它会读文件、提方案，**但你批准前它一个字都不落盘**。进入方式：会话里按 `Shift + Tab` 切换。
+**办法二，切到 Plan Mode（计划模式）。** 这是 Claude Code 专门的「只读规划」档——它会读文件、提方案，**但你批准前它一个字都不落盘**。进入方式：会话里按 `Shift + Tab`（按一两下循环到 Plan Mode），模式会在 `default → acceptEdits → plan` 之间轮转。如果只想让某一条提示用 Plan Mode 跑、不切换整个会话，在那条消息前加 `/plan` 前缀即可。
 
 不过官方也给了个很实在的提醒，**别走极端把啥都拿去规划**：
 

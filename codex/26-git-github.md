@@ -90,9 +90,9 @@ Codex 的 GitHub 集成就是冲这个来的：**在 PR 评论里 @ 它一下，
 
 > 如果你想让 Codex 自动审查每个 PR，在 Codex 设置里打开 **Automatic reviews**。这样每当有人开一个新 PR 待审查时，Codex 都会发一条 review，**不需要 `@codex review` 评论**。
 
-操作路径就两步（设置页在 Codex 那边，不在 GitHub）：
+操作路径就两步（设置页在 chatgpt.com 的 Codex 这边，不在 GitHub）：
 
-1. 去 Codex 的 code review 设置页（官方地址：`https://chatgpt.com/codex/settings/code-review` ）。
+1. 去 chatgpt.com 的 Codex 设置页（官方地址：`https://chatgpt.com/codex/settings/code-review` ；如果链接失效，在 chatgpt.com → Codex → Settings 里找 Code review）。
 2. 把 **Automatic reviews** 打开。
 
 开了之后，**新 PR 一开，Codex 自动就上**，你和队友谁都不用记着去 @。
@@ -226,7 +226,7 @@ Codex review 完，挂了一条 P1 在 PR 上。接下来呢？**你可以再留
 - **Review a commit**（审某个提交）：列出最近的 commit，让 Codex 读你选中那个 SHA 的确切改动集。
 - **Custom review instructions**（自定义审查指令）：你自己写一句（比如「重点看无障碍回归」），用同一个审查员按你的话来跑。
 
-这里有个**官方明确的小配置**值得记：`/review` 默认用你当前会话的模型；想给审查单独指定一个更强的模型，在 `config.toml` 里设 `review_model`。我自己日常会话挂个快模型干活，但 review 这种要抠细节的活，**用 `review_model` 单独绑一个更强的**，值。
+这里有个**官方明确的小配置**值得记：`/review` 默认用你当前会话的模型；想给审查单独指定一个更强的模型，在 `config.toml` 里设 `review_model`。我自己日常会话挂个快模型干活，但 review 这种要抠细节的活，**用 `review_model` 单独绑一个更强的，这笔成本花得值**。
 
 我现在的固定习惯，是把本地 `/review` 当成「开 PR 前的安检门」：
 
@@ -407,7 +407,12 @@ cd .. && rm -rf review-demo
 | 桌面端读 PR 详情 | 装 `gh` + `gh auth login` | 不装侧边栏 / 审查面板可能没 PR 信息 |
 | 守住合并红线 | merge、force-push 自己来 | 越收不回越要人放行，呼应 `read-only` 默认 |
 
-**你现在应该能：** 分清「GitHub 触发式 `@codex review`（云端、挂 PR 上）」和「本地 `/review`（本机、只读）」两条线，知道前者要 cloud + 开开关、后者啥都不用；会用 `@codex review` 手动审、开 **Automatic reviews** 自动审、用 `AGENTS.md` 的 `Review guidelines` 定制规则、一句 `@codex fix` 让它改回分支；记得装 `gh` 桌面端才读得到 PR 详情；还能照着动手环节，在玩具仓库里用 `/review` 把「开 PR 前自查」独立跑通。**最关键的——你守住了「合进主干、force-push」那道放行关，既享了 AI 审查提效，又没把方向盘交出去。**
+**你现在应该能：**
+
+- 分清两条线：**GitHub 触发式 `@codex review`**（云端跑、挂到 PR 上，要 cloud + 开开关）和**本地 `/review`**（本机跑、只读，啥都不用）。
+- 在 GitHub 侧：用 `@codex review` 手动召唤、开 **Automatic reviews** 让新 PR 自动审、用 `AGENTS.md` 的 `Review guidelines` 定制规则、一句 `@codex fix` 让它改回分支；装好 `gh` 桌面端才读得到 PR 详情。
+- 在本地：照着动手环节在玩具仓库里跑通 `/review`，把「开 PR 前自查」这条链路亲手验过一遍。
+- **守住放行关**：「合进主干（merge）」和「force-push」两个动作自己来——你既享了 AI 审查提效，又没把方向盘交出去。
 
 回到开头那个场景——**PR 排队等 review 是常态，人 review 又累又容易漏要命的坑**。把审查交给一个不会累、只报高优先级、还按你规矩挑刺的 Codex，你的 PR 不用再干等；而那条「合并放行」的红线攥在自己手里，你就既快又稳。这，就是 Git 协作里人和 AI 最舒服的分工。
 

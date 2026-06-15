@@ -1,6 +1,6 @@
 # 45 · Agent SDK：把 Claude Code 的能力搬进你自己的程序
 
-> 📚 **系列导航**：上一篇 [44 GitHub Actions] 教你把 Claude 接进 CI，让它在 PR 和流水线里自动干活。这一篇再进一步——**不止接进流水线，而是把 Claude Code 整套能力当成一个库，嵌进你自己写的程序和服务里**。Agent SDK，就是那条让你「用代码调起一个 Claude 代理」的官方通道。
+> 📚 **系列导航**：上一篇 [44 GitHub Actions](44-github-actions.md) 教你把 Claude 接进 CI，让它在 PR 和流水线里自动干活。这一篇再进一步——**不止接进流水线，而是把 Claude Code 整套能力当成一个库，嵌进你自己写的程序和服务里**。Agent SDK，就是那条让你「用代码调起一个 Claude 代理」的官方通道。
 
 兄弟们，今天聊个让你从「用工具的人」变成「造工具的人」的东西。
 
@@ -255,7 +255,7 @@ for await (const message of query({
 
 **想做个「只许看不许动」的安全代理？只给它 `Read`、`Glob`、`Grep` 就行。** 这比 CLI 里临时把关更彻底——代理压根没拿到 `Edit`，它想改也改不了。
 
-> 补一句给 Python 用户的：除了一次性的 `query()`，Python SDK 还有个 `ClaudeSDKClient`，用于**需要记住上下文的多轮连续对话**（聊天界面、REPL 那种）。一次性任务用 `query()`，要持续对话用 `ClaudeSDKClient`——刚上手先吃透 `query()` 就够了。
+> 补一句给 Python 用户的：除了一次性的 `query()`，Python SDK 还有个 `ClaudeSDKClient`——它是对 `query()` 的封装，让多次调用自动共享同一个 session，不用手动传 `resume` 参数。适合聊天界面、REPL 这类多轮对话场景；一次性任务用 `query()` 就够，刚上手先把它吃透。
 
 > 💡 一句话总结：Agent SDK 的入口是 `query()`——给它 `prompt`（干啥）和 `options`（配置，最关键是 `allowed_tools` 决定它能用哪些工具），它返回一个**消息流**让你 `async for` 接住；**那个原始 API 里的 `while` 工具循环，被 `query()` 整个吞掉了**。
 

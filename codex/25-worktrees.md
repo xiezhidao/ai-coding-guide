@@ -8,7 +8,7 @@
 
 后来我才老老实实把那个本该用的东西用上——**Worktree**。同一个项目要并行，一律开 Worktree，每个线程拿一份隔离的代码副本，从那以后再没出过「互相覆盖」这种破事。
 
-第 07 篇讲桌面 App 时我已经把 Worktree **点过一下**——它是新线程时三个模式（Local / Worktree / Cloud）里的一个，配 Handoff 在前后台之间搬（其中 Cloud（云端）模式本篇不展开，单独放在〔[10 云端任务](10-cloud.md)〕讲）。这一篇咱们往下挖：**它底层到底怎么隔离的、为什么有「分支只能在一处检出」这条铁规、Handoff 两个方向怎么走、副本攒多了怎么清。** 这些坑，不讲清楚迟早自己踩。
+第 07 篇讲桌面 App 时我已经把 Worktree **提过一下**——它是新线程时三个模式（Local / Worktree / Cloud）里的一个，配 Handoff 在前后台之间搬（其中 Cloud（云端）模式本篇不展开，单独放在〔[10 云端任务](10-cloud.md)〕讲）。这一篇咱们往下挖：**它底层到底怎么隔离的、为什么有「分支只能在一处检出」这条铁规、Handoff 两个方向怎么走、副本攒多了怎么清。** 这些坑，不讲清楚迟早自己踩。
 
 **看完这一篇，你会拿到：**
 
@@ -19,7 +19,7 @@
 - 用 Local environment（本地环境）的 setup 脚本，让新 worktree 一建出来就把依赖装好，不缺东西
 - Worktree 攒多了占磁盘怎么办：默认保留几个、什么不会被删、删之前的快照能不能恢复
 
-> ⚠️ Worktree、Handoff、Local environments **都是 Codex 桌面 App（desktop app）的功能**，CLI 里没有对应的 `--worktree` 之类的开关——别在终端里找它。下文凡涉及具体按钮、默认值、配置项，都以 Codex 官方文档（[Worktrees](https://developers.openai.com/codex/app/worktrees) / [Local environments](https://developers.openai.com/codex/app/local-environments)）为准；功能随版本可能调整，看到时以你本机实际为准。
+> ⚠️ Worktree、Handoff、Local environments **都是 Codex 桌面 App（desktop app）的功能**，CLI 里没有对应的 `--worktree` 之类的开关——别在终端里找它。下文凡涉及具体按钮、默认值、配置项，都以 Codex 官方文档（[Worktrees](https://developers.openai.com/codex/app/worktrees) / [Local environments](https://developers.openai.com/codex/app/local-environments)）为准；功能随版本可能调整，以你本机运行的实际界面为准。
 
 ---
 
@@ -51,7 +51,7 @@
 
 ![Worktrees：多任务并行不打架](assets/25-worktrees/worktree-parallel@2x.png)
 
-这张图就是上面那套机制的可视化：**同一个 Git 仓库（共享一套 `.git` 元数据）派生出 A / B / C 三份 worktree，各自挂着独立分支、各有一整套独立的工作目录文件**；三个 Codex 任务分别在各自的副本里干活（改样式 / 修 bug / 补测试），谁改的都是自己那一份——所以并行开工也碰不到别人，后写的不会盖掉先写的。
+上图：同一 Git 仓库派生三份独立 worktree，三个 Codex 任务各占一份、互不覆盖。
 
 ---
 
@@ -171,7 +171,7 @@ npm run build
 
 新 worktree 一创建，这两行自动跑，依赖装好、初始构建也做了，Codex 上来就能干活，不缺东西。
 
-> 平台差异：如果你的 setup 步骤分平台（macOS / Windows / Linux），可以**为各平台单独定义 setup 脚本**来覆盖默认的。Windows 上桌面 App 的可用范围以官方 Windows 文档为准。
+**平台差异：** 如果你的 setup 步骤分平台（macOS / Windows / Linux），可以为各平台单独定义 setup 脚本来覆盖默认的。Windows 上桌面 App 的可用范围以官方 Windows 文档为准。
 
 顺带提一个相关能力：除了 setup 脚本，local environment 还能配 **Actions（动作）**——把「启动开发服务器」「跑测试套件」这类常用命令做成 App 顶栏的快捷按钮，点一下就在内置终端里跑。这块第 07 篇露过一下，这里不展开。
 
@@ -236,9 +236,7 @@ npm run build
 
 **第二步：发一个只读的小任务**
 
-随便发一句安全的、不咋改文件的指令，比如：
-
-> 列出这个项目里所有 markdown 文件的标题。
+随便发一句安全的、不咋改文件的指令，比如：「列出这个项目里所有 markdown 文件的标题。」
 
 **预期**：Codex **基于你选的分支创建一个 worktree** 并在里头开工。这个线程的工作目录在 `$CODEX_HOME/worktrees` 下（默认 `~/.codex/worktrees` ），跟你 Local 原件是两份。
 
@@ -285,7 +283,13 @@ git worktree list
 | 让新副本装备齐全 | Local environment 的 **setup 脚本** | 存项目根 `.codex` 、可提交共享，新 worktree 一建就自动装依赖 |
 | 管住磁盘占用 | 清理规则 + 永久 worktree | 默认留最近 15 个、删前有快照能恢复；长期环境建永久 worktree |
 
-**你现在应该能：** 说清 Worktree 解决什么、铁律是「同仓库并行别抢同一份文件」；在桌面 App 里建一个 Worktree 线程，知道它默认是 detached HEAD、要提交得先 **Create branch here** ；理解「同一分支不能两处检出」这条铁规，撞上了用 Handoff 而不是硬怼；用 Handoff 把线程在前后台双向搬；用 local environment 的 setup 脚本让新 worktree 一建就齐活；还知道 worktree 攒多了怎么清、什么不会被删。
+**你现在应该能：**
+
+- 说清 Worktree 解决什么，铁律是「同仓库并行别抢同一份文件」
+- 在桌面 App 里建一个 Worktree 线程，知道它默认是 detached HEAD、要提交得先 **Create branch here**
+- 理解「同一分支不能两处检出」这条铁规，撞上了用 Handoff 而不是硬怼
+- 用 Handoff 把线程在 Local 和 Worktree 之间双向搬，用 local environment 的 setup 脚本让新 worktree 一建就齐活
+- 知道 worktree 攒多了怎么清、什么情况不会被删
 
 回头看开头那个「连开俩 Local 改同一个仓库」的蠢事，**根子就是没用隔离、让俩 Codex 抢了同一支笔**。现在你手里有 Worktree 这把隔离的钥匙，也有 Handoff 这个搬运工，**能比一头扎进去的人少走一大圈弯路。**
 

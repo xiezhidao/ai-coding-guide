@@ -181,6 +181,8 @@ Codex 支持的事件不止这几个（还有压缩前后的 `PreCompact`/`PostC
 | **`Stop`** | Codex 答完这一轮 | 让它「再多跑一趟」（比如把没过的测试再修一遍） |
 | **`SessionStart`** | 会话开始 / 恢复时 | 往上下文里注入项目状态（如最近的提交） |
 
+第五个值得知道的是 **`PermissionRequest`**（将要弹审批弹窗时触发），能自动放行或拒绝——配合第 02 节讲的规则一起用，比单独靠规则更灵活，尤其适合「高频命令免审批」这种场景。
+
 记这张表有个窍门：**看名字里的 `Pre` 和 `Post`**——`Pre` 是「之前」，所以只有它能在动作发生前**拦住**；`Post` 是「之后」，工具都跑完了，它撤不回已经产生的副作用，只能「事后补一刀」（格式化、记日志、把结果退回让模型重看）。
 
 ![钩子挂在生命周期固定点](assets/24-hooks/lifecycle-hooks@2x.png)
@@ -248,6 +250,7 @@ Codex 找钩子的地方有两种形态：**独立的 `hooks.json`**，或 **`co
 
 - **`timeout` 的单位是「秒」，不是毫秒**；省略不写时，默认是 **600 秒**。
 - **目前只有 `type: "command"` 的处理器真会跑**；`prompt` 和 `agent` 类型「能被解析但会被跳过」；`async: true` 的也会被跳过（异步钩子还没支持）。
+- **同一事件上有多个匹配钩子时，它们是并发启动的**——你的拦截钩子不会阻止另一个同事件匹配钩子同时跑。这是 Codex 和 Claude Code 的又一差异点：写 `PreToolUse` 拦截逻辑时，别以为它能「先跑完再决定其他钩子跑不跑」。
 - **命令的工作目录是会话的 `cwd`**。所以仓库内的钩子，官方建议**别用 `.codex/hooks/...` 这种相对路径**，因为 Codex 可能从子目录启动——用 `$(git rev-parse --show-toplevel)` 从 git 根算绝对路径才稳（上面例子就是这么写的）。
 - **Windows 想用不同命令**，加一个可选的 `command_windows`（TOML 里也可写 `commandWindows`）字段覆盖。
 
@@ -285,7 +288,7 @@ Codex 的 `matcher` 和 Claude Code 有个关键区别：**它是一个正则表
 几个**新手最容易栽的坑**：
 
 - **改文件的工具名是 `apply_patch`，不是 `Edit`/`Write`**。Codex 改文件走的是 `apply_patch` 机制——你在 `matcher` 里可以用 `Edit`、`Write`、`apply_patch` 任意一个来匹配它（互为别名），但钩子收到的 stdin 里 `tool_name` 始终报的是 `"apply_patch"`。想在脚本里判断工具名，记得认 `apply_patch`。
-- **不是所有事件都认 `matcher`**。`UserPromptSubmit` 和 `Stop` 这俩**无视 `matcher`**，你写了也被忽略，因为它们没有「工具名」这种东西可筛，总是每次都触发。`SessionStart` 的 `matcher` 匹配的不是工具名，而是「会话怎么起来的」（`startup`/`resume`/`clear`/`compact`）。
+- **不是所有事件都认 `matcher`**。`UserPromptSubmit` 和 `Stop` 这俩**无视 `matcher`**，你写了也被忽略，因为它们没有「工具名」这种东西可筛，总是每次都触发。`SubagentStop` 则不同，它的 `matcher` 作用于 `agent_type`，是支持的——别把 `SubagentStop` 和 `Stop` 混在一起理解。`SessionStart` 的 `matcher` 匹配的不是工具名，而是「会话怎么起来的」（`startup`/`resume`/`clear`/`compact`）。
 - **`PreToolUse` 拦不住所有命令**。官方说得很直白：它是「护栏，不是密不透风的强制边界」——目前只拦得住简单的 shell 调用、`apply_patch` 和 MCP 工具，更复杂的 shell（走 `unified_exec` 的）、`WebSearch` 这类它拦不到。所以**别拿 `PreToolUse` 当唯一的安全防线**，它是「多一道闸」，不是「万能墙」。
 
 > 💡 一句话总结：钩子写进 `~/.codex/` 或项目 `.codex/` 的 `hooks.json` / `config.toml`，配置就三层——**事件、matcher、动作**；记死 Codex 特有的几条：`timeout` 单位是**秒**（默认 600）、改文件工具名是 **`apply_patch`**、`matcher` 是**正则**、用 git 根拼路径。
@@ -338,6 +341,8 @@ Codex 的 `matcher` 和 Claude Code 有个关键区别：**它是一个正则表
 | `cwd` | 会话的工作目录 |
 | `hook_event_name` | 当前事件名 |
 | `transcript_path` | 会话记录文件路径（可能为 null） |
+| `model` | 当前活跃的模型 slug（Codex 特有扩展，需要按模型做差异处理时用） |
+| `permission_mode` | 当前权限模式（多数事件都有，部分特殊事件可能缺省） |
 
 工具类事件还会多带 `tool_name`（比如 `"Bash"`、`"apply_patch"`）、`tool_input`（工具的具体输入，`Bash` 和 `apply_patch` 用 `tool_input.command` 装命令）。比如 Codex 要跑 Bash 命令时，`PreToolUse` 钩子收到的大概长这样：
 
@@ -368,9 +373,9 @@ Codex 的 `matcher` 和 Claude Code 有个关键区别：**它是一个正则表
 **重点是 `exit 2`**，但它在不同事件上含义不一样，这点 Codex 和 Claude Code 不太一样，务必对清楚：
 
 - 在 **`PreToolUse` / `UserPromptSubmit`** 上：`exit 2` + 把理由写到 **stderr** = **拦住**这次操作 / 这条提示。
-- 在 **`PostToolUse` / `Stop` / `SubagentStop`** 上：`exit 2` + stderr 不是「拦」（工具早跑完了），而是把那段理由作为反馈塞回去——`PostToolUse` 用它**替换工具结果让模型重看**，`Stop` 用它**让 Codex 再续一轮**。
+- 在 **`PostToolUse` / `Stop` / `SubagentStop`** 上：`exit 2` + stderr 不是「拦」（工具早跑完了），而是把那段理由作为反馈塞回去——`PostToolUse` 用它替换工具结果让模型重看，`Stop` 用它让 Codex 再续一轮（详细行为见第 03 节）。
 
-换句话说，**「拦得住」的只有 `Pre` 类事件**；`Post`/`Stop` 收到 `exit 2` 是「退回 / 续轮」，撤不回已经发生的事。这呼应了第 03 节那句「`Pre` 能拦、`Post` 只能补刀」。
+换句话说，**「拦得住」的只有 `Pre` 类事件**；`Post`/`Stop` 收到 `exit 2` 是「退回 / 续轮」，撤不回已经发生的事。
 
 ### 进阶：用 stdout 返回 JSON，做更细的控制
 
@@ -654,6 +659,8 @@ hooks = false
 | 钩子不灵了 | 按顺序排查 | **先查信任**、再查 matcher / 事件 / 路径 |
 
 **你现在应该能：** 说清规则和钩子各管什么、跟「写进 AGENTS.md 的请求」差在哪个根本点（保证 vs 请求）；写一条 `prefix_rule` 给命令立规矩并用 `execpolicy check` 验；知道 `PreToolUse`/`PostToolUse`/`Stop`/`SessionStart` 各挂在 Codex 干活流程的哪一步；照模板往 `hooks.json` 写一个带 `matcher` 的钩子，并记得**去 `/hooks` 信任它**；看懂钩子靠 stdin / 退出码 / stdout 跟 Codex 对话，且分得清 Codex 和 Claude Code 那几个反直觉差异（`timeout` 秒、`apply_patch`、`block` 是续轮、信任机制）。**开头那「每周漏敲十几次格式化」的苦差，到这儿你已经有能力用一个钩子永久解决了。**
+
+> 💡 一句话总结：规则是「闸门」、钩子是「扳机」，两者配合把 AGENTS.md 的请求升级成必然兑现的保证；Codex 独有的信任机制、并发钩子、秒制 timeout 和 `apply_patch` 命名，是和 Claude Code 最容易踩坑的几个差异点。
 
 ---
 

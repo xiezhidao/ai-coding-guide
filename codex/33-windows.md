@@ -78,7 +78,7 @@ codex --version
 | 管理员审批权限 | `elevated` 沙箱的初始化要它 | 自己的电脑直接点「同意」；公司电脑可能被锁 |
 | C++ 构建工具（用 IDE 扩展时）| 部分原生依赖要编译 | `winget install --id Microsoft.VisualStudio.2022.BuildTools -e` |
 
-我自己第一次在 Windows 10 上装的时候，IDE 扩展装好了却一直「转圈不响应」，折腾了快二十分钟才在官方 FAQ 里翻到——是缺了 Visual Studio Build Tools 的 C++ 工作负载。补上那条 `winget install` 命令、重启 VS Code，立马就好了。**所以如果你也用 VS Code 里的 Codex 扩展，建议一开始就把 C++ 构建工具备上。**
+我自己第一次在 Windows 10 上装的时候，IDE 扩展装好了却一直「转圈不响应」，折腾了快二十分钟才在官方文档的排障节里翻到——是缺了 Visual Studio Build Tools 的 C++ 工作负载。补上那条 `winget install` 命令、重启 VS Code，立马就好了。**所以如果你也用 VS Code 里的 Codex 扩展，建议一开始就把 C++ 构建工具备上。**
 
 > 💡 一句话总结：一条 PowerShell 安装脚本搞定 Codex CLI 主体，前置就盯紧 Windows 版本、`winget` 可用、管理员权限三样。
 
@@ -88,7 +88,7 @@ codex --version
 
 这是 Windows 用户最该先想明白的一道选择题。别看网上吵得凶，标准其实很简单：**看你的代码和日常工作流活在哪儿。**
 
-**类比：在哪个城市落户。** 原生 PowerShell 就是「在 Windows 这座城落户」，办事走 Windows 那套流程，最快最顺；WSL2 是「在城里租了套 Linux 的房子」，你想用 Linux 的工具、跑 Linux 的脚本，就钻进去办公。两边都能住，但你总不能天天跨城通勤——选一个主场，别来回切。
+**类比：在哪个城市落户。** 原生 PowerShell 就是「在 Windows 这座城落户」，办事走 Windows 那套流程，最快最顺；WSL2 是「在城里租了套 Linux 的房子」，你想用 Linux 的工具、跑 Linux 的脚本，就钻进去办公。两边都能住，但你总不能每天从 Windows 这间办公室跑去 Linux 那间再跑回来——选定一个主工位更省心。
 
 直接上对照表：
 
@@ -126,7 +126,7 @@ git clone https://github.com/your/repo.git
 cd repo
 ```
 
-挪完之后速度立马正常。需要从 Windows 这边访问这些文件时，在资源管理器里输 `\\wsl$\Ubuntu\home\<user>` 就能进去。另外提一句，WSL1 从 Codex `0.115` 起就不支持了（沙箱换成了 `bubblewrap`），你装 WSL 的时候默认就是 WSL2，不用特意操心。
+挪完之后速度立马正常。需要从 Windows 这边访问这些文件时，在资源管理器里输 `\\wsl$\Ubuntu\home\<user>` 就能进去（把 `<user>` 替换成你的 Linux 用户名）。另外提一句，WSL1 从 Codex `0.115` 起就不支持了（沙箱换成了 `bubblewrap`），你装 WSL 的时候默认就是 WSL2，不用特意操心。
 
 > 💡 一句话总结：代码在 Windows 就用原生 PowerShell，代码在 Linux 就用 WSL2 并把仓库放进 `~/` 而不是 `/mnt/c`。
 
@@ -201,7 +201,7 @@ sandbox = "elevated" # 或 "unelevated"
 | `elevated`（首选）| 更强 | 专用的低权限沙箱用户 + 文件系统权限边界 + 防火墙规则 + 本地策略调整 | 默认就用它，性能和安全都最好 |
 | `unelevated`（退路）| 较弱 | 从你当前用户派生一个受限令牌 + ACL 文件系统边界 + 环境级离线控制 | `elevated` 装不上时顶着用 |
 
-**注意：这跟某些老中文教程说的「推荐 unelevated」恰恰相反。** 官方明确写 `elevated` 是首选，`unelevated` 只是当 `elevated` 因为权限受限装不上时的临时退路。两种模式默认还都开了「私有桌面」做 UI 隔离，除非你为了兼容老行为，否则别去关 `windows.sandbox_private_desktop`。
+**注意：这跟某些老中文教程说的「推荐 unelevated」恰恰相反。** 官方明确写 `elevated` 是首选，`unelevated` 只是当 `elevated` 因为权限受限装不上时的临时退路。两种模式默认还都开了「私有桌面」做 UI 隔离，除非你为了兼容旧的 Windows Station `Winsta0\Default` 会话桌面行为，否则别去关 `windows.sandbox_private_desktop`。
 
 **为什么 `elevated` 可能装不上？** 它要建专用沙箱用户、改防火墙规则、调本地策略，这些动作在公司管控电脑上经常被 IT 策略拦下来。最典型的报错是 `1385`——意思是 Windows 拒绝给沙箱用户它启动命令所需的登录权限。碰到 `1385`，按官方建议这么办：
 

@@ -1,8 +1,8 @@
 # 02 · 安装与使用
 
-> 📚 **系列导航**：上一篇 [01 · Claude Code 简介](01-what-is-claude-code.md) 讲清了它是什么、能干啥。这一篇带你真正把它装到自己电脑上，登录、跑起来，顺带把升级、卸载、踩坑排查一次说透。
+> 📚 **系列导航**：上一篇 [01 · Claude Code 简介](01-what-is-claude-code.md) 讲清了它是什么、能干啥。这一篇带你真正把它装到自己电脑上，登录、跑起来，顺带把升级、卸载、踩坑排查一次说透。下一篇 [03 · Claude Code 如何工作](03-how-it-works.md) 掀开盖子看代理循环。
 
-说个常见的糗事。很多人第一次装 Claude Code，随手搜了篇老教程，照着敲 `npm install -g @anthropic-ai/claude-code`，卡在权限报错上。一着急直接 `sudo` 怼上去——装是装上了，后面自动更新天天失败，`claude doctor` 一片红。折腾快一个钟头才反应过来：**官方早就不推荐 npm 这条路了**，一行 `curl` 脚本三十秒搞定的事，却硬走了最绕、最容易踩坑的那条道。
+说个常见的糗事。很多人第一次装 Claude Code，随手搜了篇老教程，照着敲 `npm install -g @anthropic-ai/claude-code`，卡在权限报错上。一着急直接 `sudo` 怼上去——装是装上了，后面自动更新天天失败，`claude doctor` 一片红。折腾快一个钟头才反应过来：**官方早已把原生脚本列为首选，npm 那条路坑更多**，一行 `curl` 脚本三十秒搞定的事，却硬走了最绕、最容易踩坑的那条道。
 
 说白了，**装 Claude Code 本身不难，难的是没人告诉你哪条路是坑**。这篇就把每个平台的正路标清楚，让你别重蹈覆辙。
 
@@ -65,7 +65,7 @@ Claude Code 有三种用法：**CLI（命令行）** 功能最全、最贴近设
 curl -fsSL https://claude.ai/install.sh | bash
 ```
 
-> 国内网络提示：`claude.ai` 和下载服务器 `downloads.claude.ai` 多数情况下需要**魔法上网**才能稳定访问。装的时候挂上代理，能省掉一大半「卡住 / 超时」的报错。
+国内网络提示：`claude.ai` 和下载服务器 `downloads.claude.ai` 多数情况下需要**魔法上网**才能稳定访问。装的时候挂上代理，能省掉一大半「卡住 / 超时」的报错。
 
 ### Windows（原生，不用 WSL）
 
@@ -168,7 +168,7 @@ claude
 
 最常见的一种：**浏览器没自动弹出，或你在远程服务器 / WSL / SSH 里登录**——浏览器可能开在另一台机器上，回调回不来。官方办法很简单：
 
-> 在登录提示界面按 `c`，把那串 OAuth 授权 URL 复制出来，手动粘到浏览器打开，登录完显示一个 code，再把 code 贴回终端即可。
+在登录提示界面按 `c`，把那串 OAuth（开放授权）URL 复制出来，手动粘到浏览器打开，登录完显示一个 code，再把 code 贴回终端即可。
 
 在云服务器上配 Claude Code 时很容易吃这亏，傻等浏览器弹窗半天没反应——远程环境就得走「复制 URL 手动开」这条路。连粘贴都不灵的话，还有个更稳的退路命令：
 
@@ -270,7 +270,7 @@ rm -f .mcp.json
 | `'&&' is not valid` | 你在 PowerShell 里跑了 CMD 命令 | 换成 PowerShell 的 `irm` 命令 |
 | `bash is not recognized` | 在 Windows 上跑了 Mac/Linux 命令 | 换成 PowerShell 的 `irm` 命令 |
 | Linux 安装时 `Killed` | 内存不够（OOM 杀进程） | 加交换空间（见下方），Claude Code 要 4GB+ RAM |
-| `Error loading shared library` | 下错了 musl/glibc 二进制 | 见官方 musl/glibc 排查 |
+| `Error loading shared library` | 安装器误判了系统 libc 类型，拉了错误变体 | 见官方 musl/glibc 排查 |
 | 登录后 `403 Forbidden` | 订阅无效 / 账号没权限 | 查订阅状态，或确认 Console 账号有对应角色 |
 | `App unavailable in region` | 你所在区域不支持 | 见 [支持的国家/地区](https://www.anthropic.com/supported-countries) |
 

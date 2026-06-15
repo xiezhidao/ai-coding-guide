@@ -17,7 +17,7 @@
 - Codex 自带的三个内置 agent（`default` / `worker` / `explorer`），开箱即用、不用配
 - 怎么写自定义 agent：往 `~/.codex/agents/` 或 `.codex/agents/` 丢一个 TOML 文件，必填三个字段是干嘛的
 - 怎么给不同 agent 选不同模型和「思考强度」，让侦察兵用快模型、审查员用强模型
-- 一个能照着跑、给了预期输出的实战：写一个只读侦察 agent 并让它干活
+- 手把手实战：写一个只读侦察 agent，派它跑、验证它只回摘要、不越权
 
 > ⚠️ 下文凡涉及具体命令、配置键、默认值，都以 Codex [官方文档](https://developers.openai.com/codex/subagents) 为准；模型名（`gpt-5.5` 之类）这种随版本变的东西，看到时以你本地实际显示为准，本篇尽量不写死。
 
@@ -186,7 +186,7 @@ flowchart TD
 
 内置三个 agent 能应付不少场景，但你要是发现自己老在重复同一类活——每次审查都强调「像 owner 那样审、盯正确性和安全」——那就该把这套固化成一个**自定义 agent**，下次一句话唤起。
 
-**怎么写：往 agent 目录丢一个 TOML 文件，一个文件定义一个 agent。** 官方给的两个位置：
+**怎么写：往 agent 目录丢一个 TOML（Tom's Obvious Minimal Language，一种简洁的配置文件格式，比 JSON 更适合人读写）文件，一个文件定义一个 agent。** 官方给的两个位置：
 
 | 放哪 | 谁能用 | 适合 |
 |------|--------|------|
@@ -232,7 +232,7 @@ Prioritize correctness, security, behavior regressions, and missing test coverag
 
 把它俩落到文件里，给侦察兵配快模型、低思考，给审查员配强模型、高思考：
 
-> 官方示例的侦察兵用 `gpt-5.3-codex-spark`（需 ChatGPT Pro，研究预览），这里改用 `gpt-5.4-mini`，Pro 用户可换回 `gpt-5.3-codex-spark`。
+注意模型名：官方示例的侦察兵用 `gpt-5.3-codex-spark`（需 ChatGPT Pro，研究预览），这里改用 `gpt-5.4-mini`，Pro 用户可换回 `gpt-5.3-codex-spark`。
 
 ```toml
 # .codex/agents/explorer.toml —— 只读侦察兵：快、省、不动手
@@ -355,9 +355,19 @@ cat calc.py
 
 要是你有**一大堆长得很像的活**——比如「一行一个文件 / 一行一个 PR / 一行一个迁移目标」，挨个审一遍——Codex 有个 `spawn_agents_on_csv` ：它读一份 CSV，**每行派一个 worker 子代理**，等整批跑完，再把合并结果导出成 CSV。
 
-**类比：流水线分拣。** 一筐包裹（CSV 每行一件），开一排分拣员（每行一个 worker）同时贴标签，全贴完汇总成一张总表。适合那种「同一套审查动作、对着几十上百个相似对象重复跑」的批量审计。每个 worker 必须**恰好调一次** `report_agent_job_result` 回报结果，否则那一行在导出的 CSV 里会被标成错误。具体参数和用法以[官方文档](https://developers.openai.com/codex/subagents)为准，这里不展开。
+**类比：流水线分拣。** 一筐包裹（CSV 每行一件），开一排分拣员（每行一个 worker）同时贴标签，全贴完汇总成一张总表。每个 worker 必须**恰好调一次** `report_agent_job_result` 回报结果，否则那一行在导出的 CSV 里会被标成错误。具体参数和用法以[官方文档](https://developers.openai.com/codex/subagents)为准，这里不展开。
 
-> 💡 一句话总结：`spawn_agents_on_csv`（实验性）把「一行一个活」的批量任务并行化——每行派一个 worker、跑完汇总成 CSV；知道有它就行，别当稳定功能用。
+哪些活值得用它、哪些不值得，简单对一张表：
+
+| 场景 | 适不适合 `spawn_agents_on_csv` | 原因 |
+|------|-------------------------------|------|
+| 批量审几十个 PR、对象结构一致 | ✅ 适合 | 同一套动作、大量相似对象，并行收益明显 |
+| 批量把几十个文件的注释翻译成英文 | ✅ 适合 | 每行独立、互不依赖，正是 CSV 批处理的主场 |
+| 步骤间有顺序依赖（A 完才能 B） | ❌ 不适合 | CSV 各行是并行派出的，无法保证顺序 |
+| 只有三四个对象、改动很小 | ❌ 不适合 | 开实验性批处理的成本比你直接说高，得不偿失 |
+| 涉及并行写同一批文件 | ⚠️ 慎用 | 多 worker 同时动手，撞车风险和第 02 节一样 |
+
+> 💡 一句话总结：`spawn_agents_on_csv`（实验性）适合「同一套动作、对着大批量相似对象重复跑」的只读或独立写入场景——步骤有依赖、对象太少、或并行写同一批文件的，用普通子代理或直接在主线干更稳。
 
 ---
 

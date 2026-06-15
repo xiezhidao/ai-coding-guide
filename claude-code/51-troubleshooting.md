@@ -1,6 +1,6 @@
 # 51 · 常见问题排查（FAQ / Troubleshooting）
 
-> 📚 **系列导航**：上一篇 [50 反模式：常见的错误用法](50-anti-patterns.md) 把那些「看着没错、其实在挖坑」的用法挨个点名。这一篇接着收尾——**当 Claude Code 真出毛病的时候，怎么按图索骥、一步步排查到根**。装不上、登不进、权限拦你、MCP 不连、跑得卡、蹦个红字报错……这篇给你一套「症状 → 该翻哪、该敲啥」的查问题地图。
+> 📚 **系列导航**：上一篇 [50 反模式：常见的错误用法](50-anti-patterns.md) 把那些「看着没错、其实在挖坑」的用法挨个点名。这一篇接着聊排查——**当 Claude Code 真出毛病的时候，怎么按图索骥、一步步排查到根**。装不上、登不进、权限拦你、MCP 不连、跑得卡、蹦个红字报错……这篇给你一套「症状 → 该翻哪、该敲啥」的查问题地图。
 
 先说一个特别典型、又特别容易把人坑进去的场景，理解它你就明白这一篇要解决什么。
 
@@ -66,7 +66,7 @@
 
 ### `/feedback`：实在搞不定，上报
 
-如果你按文档查了、`/doctor` 也跑了，问题还在——**别自己死磕，用 `/feedback` 上报给 Anthropic**。它会把你的对话记录连同描述一起发过去，这是官方诊断真实问题（尤其是「响应质量莫名变差」这种没有报错的玄学问题）**最快的方式**。这个命令还提供一个选项：**帮你打开一个预填好内容的 GitHub issue**。
+如果你按文档查了、`/doctor` 也跑了，问题还在——**别自己死磕，用 `/feedback` 上报给 Anthropic**。它会把你的对话记录连同描述一起发过去，这是官方诊断真实问题（尤其是「响应质量莫名变差」这种没有报错的玄学问题）**最快的方式**。这个命令还提供一个选项：**帮你打开一个预填好内容的 GitHub issue**。注意：如果你用的是 Bedrock、Vertex 等第三方提供商，`/feedback` 不会把信息发给 Anthropic，而是保存到本地存档，需要你手动发给 Anthropic 的账户代表。
 
 > 你可能在别处听过 `/bug` 这个说法——它就是「上报问题」这件事的旧叫法。现在官方统一用 **`/feedback`**：在会话里把记录和描述发给 Anthropic，或顺带开一个预填的 GitHub issue。记 `/feedback` 这一个就够。
 
@@ -182,7 +182,7 @@ claude
 
 > 这背后是第 50 篇反模式讲过的同一个道理：**把「安全边界」托付给一句自然语言指令，本身就是个反模式**——指令是软的，规则和 hook 才是硬的。
 
-> 💡 一句话总结：配置没生效，先用 `/context`、`/memory`、`/hooks`、`/mcp`、`/permissions` 这组命令查**「实际加载了什么」**；高频坑是 **hook matcher 大小写写错、配置被更近的 `settings.local.json` 覆盖、`.mcp.json` 放错目录、以及把「安全禁令」错写进 CLAUDE.md 而不是 `deny` 规则**。
+> 💡 一句话总结：配置没生效，先用 `/context`、`/memory`、`/hooks`、`/mcp`、`/permissions` 这组命令查**「实际加载了什么」**；高频坑是 **hook matcher 大小写写错、配置被优先级更高的 `settings.local.json` 覆盖、`.mcp.json` 放错目录、以及把「安全禁令」错写进 CLAUDE.md 而不是 `deny` 规则**。
 
 ---
 
@@ -272,7 +272,7 @@ curl -I https://api.anthropic.com
 
 ### 两个新手高频、又容易误解的报错
 
-**`model not found` / `you may not have access to it`**：配置的模型名没被识别，或你账户没权限。先在交互式 CLI 里敲 `/model` 从可用模型里重选。**如果错误的模型老是冒出来，说明某处设了过时的模型 ID**——按优先级查：`--model` 标志 → `ANTHROPIC_MODEL` 环境变量 → `settings.local.json` → 各级 `settings.json` 里的 `model` 字段，把过时值删掉就回落到账户默认了。官方还有个实在建议：**用别名（如 `sonnet`、`opus`）而不是写死的版本号 ID，别名会自动跟最新版，不会过时**（模型选择详见第 05 篇）。
+**`model not found` / `you may not have access to it`**：配置的模型名没被识别，或你账户没权限。先在交互式 CLI 里敲 `/model` 从可用模型里重选。**如果错误的模型老是冒出来，说明某处设了过时的模型 ID**——按优先级查：`--model` 标志 → `ANTHROPIC_MODEL` 环境变量 → `settings.local.json` → 各级 `settings.json` 里的 `model` 字段，把过时值删掉就回落到账户默认了。官方还有个实在建议：**用别名（如 `sonnet`、`opus`）而不是写死的版本号 ID，别名会自动跟最新版，不会过时**（`/model`、`ANTHROPIC_MODEL` 等配置方式详见第 04 篇 API 配置）。
 
 **`Claude Code is unable to respond to this request, which appears to violate our Usage Policy`**：使用政策检查拦下了。注意一个反直觉的点——**这个检查评估的是整段对话，不只是你最后那句**，所以在同一会话里换句话再发，往往还会触发同样的拒绝。正确做法是按两下 Esc 或 `/rewind` 回退到触发那一轮之前（详见第 37 篇），换个表述或思路；实在找不到是哪轮，`/clear` 重开一段对话。
 

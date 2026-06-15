@@ -245,7 +245,7 @@ Codex 不是这套。它把「能动多大」和「问不问你」**拆成两个
 
 光看不练记不住。下面用一份真实风格的 `CLAUDE.md` ，手把手迁成 `AGENTS.md` ，并验证 Codex 真读到了。跟着敲，五分钟搞定。
 
-> 平台差异先说清：下面的 `mkdir` / `git init` 在 **Mac / Linux** 直接用；**Windows** 建议在 Git Bash 或 WSL 里敲，或用资源管理器手动建。路径里 `~` 指用户主目录，Windows 对应 `C:\Users\你的用户名\` 。
+平台差异先说清：下面的 `mkdir` / `git init` 在 **Mac / Linux** 直接用；**Windows** 建议在 Git Bash 或 WSL 里敲，或用资源管理器手动建。路径里 `~` 指用户主目录，Windows 对应 `C:\Users\你的用户名\` 。
 
 **第一步：准备一份待迁移的 `CLAUDE.md` 。**
 

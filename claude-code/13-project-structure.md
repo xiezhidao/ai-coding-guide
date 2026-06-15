@@ -1,6 +1,6 @@
 # 13 · 项目结构：Claude Code 在你项目里都放了什么
 
-> 📚 **系列导航**：上一篇 [12 项目初始化] 带你跑了 `/init`，给项目生成了第一个 `CLAUDE.md`。这一篇接着往下看——`/init` 之后，你项目里悄悄多出来的那个 `.claude/` 文件夹，到底装了什么、归谁管、要不要进 git。
+> 📚 **系列导航**：上一篇 [12 项目初始化](12-init.md) 带你跑了 `/init`，给项目生成了第一个 `CLAUDE.md`。这一篇接着往下看——`/init` 之后，你项目里悄悄多出来的那个 `.claude/` 文件夹，到底装了什么、归谁管、要不要进 git。
 
 都说 `.claude` 那个文件夹「不用管，它自己会处理」，但说句实话，**搞懂它你才算真正会用 Claude Code**。
 
@@ -53,6 +53,7 @@
 your-project/
 ├── CLAUDE.md                ← 项目说明书（也可放 .claude/CLAUDE.md）
 ├── CLAUDE.local.md          ← 你的个人项目偏好（进 .gitignore）
+├── .mcp.json                ← 团队共享的 MCP 服务器配置（进 git）
 └── .claude/
     ├── settings.json        ← 团队共享配置：权限、hooks、模型默认值
     ├── settings.local.json  ← 你的个人配置覆盖（自动 gitignore）
@@ -90,6 +91,9 @@ Claude 每次进项目**第一个读**的文件。项目是什么、怎么跑、
 **`agents/` —— 子代理。**
 每个 `.md` 定义一个有**独立上下文窗口**的专项助手，主对话脏不到它。适合并行干活或隔离任务。
 
+**`.mcp.json` —— 团队共享的 MCP 服务器配置。**
+放在项目根目录，和 `.claude/` 并列。MCP（Model Context Protocol）服务器可以在两个地方配：这里的 `.mcp.json` 是**进 git 给全队共享**的，比如团队都要用的数据库工具或内部 API；而个人的 MCP 配置（比如只你自己在用的工具）存在 `~/.claude.json` 里，不会进任何仓库。**两者的区别就是：项目共享 vs 个人私用**。
+
 > 💡 **一句话总结**：项目级 `.claude/` 里，`CLAUDE.md` / `rules/` 是给 Claude 看的「指导」，`settings.json` 是 Claude Code「强制执行」的配置，`commands/` `skills/` `agents/` 是你给它装的「扩展」。
 
 ---
@@ -99,6 +103,8 @@ Claude 每次进项目**第一个读**的文件。项目是什么、怎么跑、
 这是最容易绕晕新手、但其实最简单的一点：**上面那些目录名，在用户级的 `~/.claude/` 里几乎原样再有一份**。
 
 `commands/`、`rules/`、`skills/`、`agents/`、`CLAUDE.md`、`settings.json`——这些在项目里有，在 `~/.claude/` 里也有。区别只有一个：
+
+（用户级 `~/.claude/` 还有几个项目级没有的独有目录——`themes/`、`keybindings.json`、`output-styles/`、`workflows/` 等，留给后续专篇逐一介绍。）
 
 **放在 `~/.claude/` 下的，对你所有项目生效；放在项目 `./.claude/` 下的，只对那一个项目生效。**
 
@@ -111,7 +117,7 @@ Claude 每次进项目**第一个读**的文件。项目是什么、怎么跑、
 
 | 文件 / 目录 | 在哪 | 是什么 | 你要不要管 |
 |------------|------|--------|-----------|
-| `~/.claude.json` | 家目录 | 应用状态：登录态、个人 MCP 服务器、各项目的信任记录 | 基本不碰，靠 `/config` 改 |
+| `~/.claude.json` | 家目录 | 应用状态：登录态（OAuth session）、主题、个人 MCP 服务器、各项目的信任记录及 UI 偏好 | 基本不碰，靠 `/config` 改 |
 | `~/.claude/projects/` | 用户级 | 各项目的会话记录；**自动记忆**就放在它的 `<项目>/memory/` 子目录里 | 不用写，它自己维护 |
 
 这里多说一句**自动记忆（auto memory）**：它和 `CLAUDE.md` 是两套东西。`CLAUDE.md` 是**你写**给 Claude 的指令；自动记忆是 **Claude 自己写**给自己的笔记（比如它摸清了你的构建命令、踩过的坑），存在 `~/.claude/projects/<项目>/memory/` 下，跨会话复用。**这俩别搞混：一个你写、一个它写。**

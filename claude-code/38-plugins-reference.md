@@ -1,6 +1,6 @@
 # 38 · 插件参考手册：把自己那套配置，打成一个能发出去的包
 
-> 📚 **系列导航**：上一篇 [37 检查点（Checkpoints）] 教你怎么给会话「存档读档」，改坏了一键回到上一个安全点。这一篇换个层面——**第 24 篇教你「用别人的插件」，这一篇教你「造自己的插件」**：插件的目录到底怎么摆、`plugin.json` 每个字段管什么、能打包哪些组件、依赖怎么写、怎么建市场把它发给团队。这是插件的「参考手册」深度版。
+> 📚 **系列导航**：上一篇 [37 检查点（Checkpoints）](37-checkpoints.md) 教你怎么给会话「存档读档」，改坏了一键回到上一个安全点。这一篇换个层面——**第 24 篇教你「用别人的插件」，这一篇教你「造自己的插件」**：插件的目录到底怎么摆、`plugin.json` 每个字段管什么、能打包哪些组件、依赖怎么写、怎么建市场把它发给团队。这是插件的「参考手册」深度版。
 
 给一个插件跑一下 `claude plugin details`，输出里常有一行数字值得留意：**这个插件每个会话常驻占 ~180 token，里头两个 skill 触发时各自再吃掉 ~2400 和 ~1800 token**。
 
@@ -79,7 +79,7 @@ my-plugin/
 |------|------|------|
 | `name` | string | 唯一标识符，kebab-case（小写加连字符）、不带空格 |
 
-`name` 为什么这么关键？因为**它就是组件的命名空间前缀**。一个叫 `plugin-dev` 的插件里有个 agent 叫 `agent-creator`，在界面里会显示成 `plugin-dev:agent-creator`；skill 调用就是 `/plugin-dev:xxx`。**命名空间是插件防撞名的根本机制**——你装十个插件，各家的 skill 都带自家前缀，不会打架。
+`name` 为什么这么关键？因为**它就是组件的命名空间（namespace）前缀**。一个叫 `plugin-dev` 的插件里有个 agent 叫 `agent-creator`，在界面里会显示成 `plugin-dev:agent-creator`；skill 调用就是 `/plugin-dev:xxx`。**命名空间是插件防撞名的根本机制**——你装十个插件，各家的 skill 都带自家前缀，不会打架。
 
 ### 元数据字段（描述插件「是什么」）
 
@@ -88,7 +88,7 @@ my-plugin/
 | 字段 | 干什么 |
 |------|--------|
 | `displayName` | 界面里显示的人类可读名，能带空格大小写；省了就回退用 `name` |
-| `version` | 语义版本号。**设了它，用户只在你提版本号时才收到更新**（这是个大坑，第 08 节细说） |
+| `version` | 语义版本号（semantic versioning）。**设了它，用户只在你提版本号时才收到更新**（这是个大坑，第 08 节细说） |
 | `description` | 一句话说清插件干嘛，浏览/安装时显示 |
 | `author` | 作者信息（`name` / `email` / `url`） |
 | `homepage` / `repository` / `license` | 文档地址 / 源码地址 / 许可证 |
@@ -327,7 +327,7 @@ claude --plugin-dir ~/.claude/skills/my-greeter
 |-----------|--------|------|
 | **相对路径** | `"./plugins/my-greeter"` | 插件就在市场同一个仓库里（最常见） |
 | **github** | `{ "source": "github", "repo": "owner/repo" }` | 插件在另一个 GitHub 仓库 |
-| **git-subdir** | 给 `url` + `path` | 插件在某个大仓库（monorepo）的子目录，稀疏克隆省带宽 |
+| **git-subdir** | 给 `url` + `path` | 插件在某个大仓库（monorepo，多项目合一仓库）的子目录，稀疏克隆省带宽 |
 | **npm** | `{ "source": "npm", "package": "@org/plugin" }` | 作为 npm 包发布的插件 |
 
 **动手：把第 05 节那个插件，装进一个本地市场试试。** 假设你按上面的结构建好了 `my-marketplace/`（里头 `.claude-plugin/marketplace.json` + `plugins/my-greeter/`），在 Claude Code 里：
@@ -418,7 +418,7 @@ claude plugin validate ./my-marketplace
 }
 ```
 
-声明后，**装/启用你的插件时，Claude Code 会自动把依赖也装上/启上**。版本可以用 semver 范围约束（像 `~2.1.0`），免得依赖出个大版本把你的插件搞崩。卸载时，`claude plugin uninstall --prune` 能顺手清掉那些「只为满足依赖而自动装、现在没人要」的插件；**你手动直接装的插件永远不会被 prune 碰**。
+声明后，**装/启用你的插件时，Claude Code 会自动把依赖也装上/启上**。版本可以用 semver（语义版本范围）约束（像 `~2.1.0`），免得依赖出个大版本把你的插件搞崩。卸载时，`claude plugin uninstall --prune` 能顺手清掉那些「只为满足依赖而自动装、现在没人要」的插件；**你手动直接装的插件永远不会被 prune 碰**。
 
 **类比：配料表里标「需另购的配件」。** 一份家具说明书末尾写着「本款需另购 M4 螺丝包（2.1 规格）」——你照单备齐配件，家具才装得起来。`dependencies` 就是插件的这张配件清单：**它把「我需要谁、要哪个版本」写明，Claude Code 照单自动备齐**。
 

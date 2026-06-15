@@ -128,12 +128,15 @@ Codex 把所有配置放在一个文件里：`~/.codex/config.toml` （这是 Co
 
 ![CC Switch 主界面](assets/05-third-party-models/ccswitch.png)
 
-安装 CC Switch 之后，进入页面上面会看到如图
+安装 CC Switch 后，打开主界面，点击「Add Provider」或对应的「+」入口，进入提供商配置页。
 
 ![CC Switch 安装后进入的主页面](assets/05-third-party-models/add-provider.png)
 
-选中 Claude Code，对它进行配置供应商，相当于使用 Claude Code 消耗哪家的 token。
+这张图是添加提供商的入口页面。在左侧列表里选中你想配置的工具（这里选 Codex），右侧会展开该工具的「Provider」设置区——在这里选择你要接入的后端（DeepSeek 等）、填入对应的 API Key，保存后 CC Switch 就会把 Codex 的请求透明转发到你选的平台。
+
 ![CC Switch 配置供应商：一长串预设后端可选](assets/05-third-party-models/add-provider2.png)
+
+这张图展示的是选择后端时的预设列表——DeepSeek、OpenRouter 等常见平台都内置了，不用手填地址和协议细节，选中填 Key 即可。
 
 **类比：找个翻译。** 你（Codex）只会说英语（OpenAI 协议），对方（DeepSeek）只听得懂中文。路线一是指望对方自己学英语（平台支持 Responses API）；路线二是你雇个翻译（代理工具）站中间，两头传话。翻译靠谱，沟通就顺。
 
@@ -183,7 +186,7 @@ export DEEPSEEK_API_KEY=<你的 DeepSeek API Key>
 $env:DEEPSEEK_API_KEY="<你的 DeepSeek API Key>"
 ```
 
-> 这行 `export` / `$env:` 只在当前终端窗口有效，关掉就没了。要长期用，Mac 写进 `~/.zshrc` 、Linux 写进 `~/.bashrc` 再 `source` 一下；Windows 在「系统属性 → 环境变量」里加用户变量。
+这行 `export` / `$env:` 只在当前终端窗口有效，关掉就没了。要长期用，Mac 写进 `~/.zshrc` 、Linux 写进 `~/.bashrc` 再 `source` 一下；Windows 在「系统属性 → 环境变量」里加用户变量。
 
 ### 第三步：在 config.toml 里建一个提供商
 
@@ -214,7 +217,7 @@ env_key = "DEEPSEEK_API_KEY"   # 引用上一步的环境变量名
 
 > 提醒一句：内置的提供商 id（`openai`、`ollama`、`lmstudio`）是保留的、不能覆盖（来源：官方《Configuration Reference》），所以自定义 id 别取这几个名字。
 
-> 💡 **一句话总结**：手改配置 = 设环境变量存 Key + 在 `config.toml` 里建一个 `model_providers` 提供商 + 顶层把 `model_provider` 和 `model` 指过去；**语法照官方抄，模型名 / 地址 / 能否跑通全部以实测和官方为准**。
+> 💡 **一句话总结**：手改配置 = 设环境变量存 Key + 在 `config.toml` 里建一个 `model_providers` 提供商 + 顶层把 `model_provider` 和 `model` 指过去；语法是固定的，能不能跑通看协议那关。
 
 ---
 
