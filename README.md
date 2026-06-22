@@ -1,6 +1,6 @@
 # AI 编程（Claude Code + Codex）指南
 
-[English](./README.en.md) | **简体中文**
+**简体中文** | [English](./README.en.md)
 
 > 📘 **92 篇 · 约 52 万字** 精修中文教程，带你从装好到熟练 —— **Claude Code 53 篇 + Codex 39 篇**，把命令行变成你最快的那只手。
 
